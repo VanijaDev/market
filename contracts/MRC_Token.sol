@@ -13,7 +13,7 @@ contract MRC_Token is DetailedERC20("Market TEST", "MRKT", 8), MintableToken {
   }
   
   constructor() public {
-    totalSupplyMax = 1 * 10 ^ 9; //   1 000 000 000
+    totalSupplyMax = 1e17; //   1 000 000 000 0000 0000
   }
 
   /**
