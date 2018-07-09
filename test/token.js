@@ -2,7 +2,7 @@ let MRC_Token = artifacts.require("./MRC_Token");
 
 import {
   advanceBlock
-} from '../node_modules/openzeppelin-solidity/test/helpers/advanceToBlock.js';
+} from './helpers/advanceToBlock.js';
 
 var BigNumber = require('bignumber.js');
 
