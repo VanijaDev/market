@@ -22,13 +22,13 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
     await advanceBlock();
   });
 
-  beforeEach("create crowdsale inst", async () => {
+  beforeEach("create new instances", async () => {
     token = await MRC_Token.new();
 
     let mock = crowdsaleMock();
-    let wallet = accounts[4];
+    let wallet = accounts[9];
 
-    crowdsale = await MRC_Crowdsale.new(mock.rate, wallet, token.address);
+    crowdsale = await MRC_Crowdsale.new(mock.rate, wallet, token.address, mock.reservations);
   });
 
   describe("add to whiteist functional", () => {
