@@ -17,7 +17,7 @@ contract("MRC_Token", (accounts) => {
     await advanceBlock();
   });
 
-  beforeEach("new token inst", async () => {
+  beforeEach("create token inst", async () => {
     token = await MRC_Token.new();
   });
 
