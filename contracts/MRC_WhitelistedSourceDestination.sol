@@ -5,11 +5,12 @@ import "../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract MRC_WhitelistedSourceDestination is Ownable {
 
-  mapping (address => address) whitelist;
+  mapping (address => address) public whitelist;
 
   /**
    * @dev Reverts if beneficiary is not whitelisted. Can be used when extending this contract.
    */
+   // TODO: test
   modifier isWhitelisted(address _source) {
     require(whitelist[_source] != address(0), "source address has no destination address");
     _;
@@ -21,7 +22,7 @@ contract MRC_WhitelistedSourceDestination is Ownable {
    * @param _destination Address to be added to the whitelist as token destination address
    */
   function addToWhitelist(address _source, address _destination) external onlyOwner {
-    require(_destination != address(0), "_destination cannot be set to 0");  // TODO: test
+    require(_destination != address(0), "destination address cannot be set to 0");  // TODO: test
 
     whitelist[_source] = _destination;
   }
@@ -32,10 +33,10 @@ contract MRC_WhitelistedSourceDestination is Ownable {
    * @param _destinations Addressees to be added to the whitelist as token destination addresses
    */
   function addManyToWhitelist(address[] _sources, address[] _destinations) external onlyOwner {
-    require(_sources.length == _destinations.length, "_sources and _destinations length are not equal");  // TODO: test
+    require(_sources.length == _destinations.length, "sources and destinations arrays length are not equal");  // TODO: test
 
     for (uint256 i = 0; i < _sources.length; i++) {
-    require(_destinations[i] != address(0), "_destination[i] cannot be set to 0");  // TODO: test
+      require(_destinations[i] != address(0), "destination[i] address cannot be set to 0");  // TODO: test
 
       whitelist[_sources[i]] = _destinations[i];
     }
