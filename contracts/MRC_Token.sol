@@ -7,7 +7,7 @@ import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/DetailedERC2
 contract MRC_Token is DetailedERC20("Market TEST", "MRKT", 8), MintableToken {
   uint256 public totalSupplyMax;
 
-  modifier amountAllowedToMint(uint256 _amount) {
+  modifier amountWithinMaxLimit(uint256 _amount) {
     require(totalSupply().add(_amount) <= totalSupplyMax, "token amount cannot be minted because totalSupply will exceed totalSupplyMax");
     _;
   }
@@ -28,7 +28,7 @@ contract MRC_Token is DetailedERC20("Market TEST", "MRKT", 8), MintableToken {
   )
     hasMintPermission
     canMint
-    amountAllowedToMint(_amount)
+    amountWithinMaxLimit(_amount)
     public
     returns (bool)
   {
