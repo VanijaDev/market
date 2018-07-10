@@ -50,6 +50,9 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
 
       assert.equal(await crowdsale.whitelist.call(ACC_1), ACC_2, "wrong destination for ACC_1");
       assert.equal(await crowdsale.whitelist.call(ACC_3), ACC_4, "wrong destination for ACC_3");
+
+      await crowdsale.addToWhitelist(ACC_1, ACC_1);
+      assert.equal(await crowdsale.whitelist.call(ACC_1), ACC_1, "wrong destination for ACC_1, should be again ACC_1");
     });
   });
 
