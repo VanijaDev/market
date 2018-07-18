@@ -30,7 +30,7 @@ contract("Reservations", (accounts) => {
     let mock = crowdsaleMock();
     let wallet = accounts[9];
 
-    const OPENING = web3.eth.getBlock("latest").timestamp;
+    const OPENING = web3.eth.getBlock("latest").timestamp + duration.hours(1);
     const ICO_START = OPENING + duration.hours(1);
     const CLOSING = ICO_START + duration.hours(1);
     const TIMINGS = [OPENING, ICO_START, CLOSING];
