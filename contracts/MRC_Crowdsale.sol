@@ -9,9 +9,17 @@ import "./MRC_Token.sol";
 
 
 contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
-  MRC_Token token;  //  TODO: remove
+  MRC_Token token;
 
   
+  /**
+   * @dev Constructor, takes crowdsale opening and closing times.
+   * @param _rate                 Crowdsale token per ETH rate
+   * @param _wallet               Crowdsale wallet
+   * @param _token                Crowdsale token
+   * @param _reservationPercents  Crowdsale res: [RESERVE_TEAM, RESERVE_BOUNTY, RESERVE_DEVELOPMENT, RESERVE_SALE_COST]
+   * @param _timings              Crowdsale timings: [OPENING, ICO_START, CLOSING]
+   */
   constructor(uint256 _rate, address _wallet, ERC20 _token, uint8[] _reservationPercents, uint256[] _timings) MRC_StagesCrowdsale(_rate, _wallet, _token, _timings) public {
     token = MRC_Token(_token);
     calculateTokenReservations(_reservationPercents, token.totalSupplyMax());
