@@ -21,7 +21,7 @@ module.exports = async function (deployer, network, accounts) {
         const RESERVE_SALE_COST = 1;
         const RESERVATIONS = [RESERVE_TEAM, RESERVE_BOUNTY, RESERVE_DEVELOPMENT, RESERVE_SALE_COST];
 
-        let crowdsale = await deployer.deploy(MRC_Crowdsale, RATE, WALLET, token.address, RESERVATIONS);
+        let crowdsale = await deployer.deploy(MRC_Crowdsale, RATE, WALLET, token.address, RESERVATIONS, TIMINGS);
         await token.transferOwnership(crowdsale.address);
     });
 }

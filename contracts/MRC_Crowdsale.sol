@@ -1,18 +1,18 @@
 pragma solidity ^0.4.24;
 
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
-import "../node_modules/openzeppelin-solidity/contracts/crowdsale/Crowdsale.sol";
 
 import "./MRC_WhitelistedSourceDestination.sol";
 import "./MRC_CrowdsaleReservations.sol";
+import "./MRC_StagesCrowdsale.sol";
 import "./MRC_Token.sol";
 
 
-contract MRC_Crowdsale is Crowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
-  MRC_Token token;
+contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
+  MRC_Token token;  //  TODO: remove
 
   
-  constructor(uint256 _rate, address _wallet, ERC20 _token, uint8[] _reservationPercents) Crowdsale(_rate, _wallet, _token) public {
+  constructor(uint256 _rate, address _wallet, ERC20 _token, uint8[] _reservationPercents, uint256[] _timings) MRC_StagesCrowdsale(_rate, _wallet, _token, _timings) public {
     token = MRC_Token(_token);
     calculateTokenReservations(_reservationPercents, token.totalSupplyMax());
   }
