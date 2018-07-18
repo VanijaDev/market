@@ -79,7 +79,7 @@ contract("Reservations", (accounts) => {
     });
   });
 
-  describe.only("reservation events are emitted on transfer", () => {
+  describe("reservation events are emitted on transfer", () => {
     it("should validate team reservation transfer event on transfer", async () => {
       let tokens = new BigNumber(await crowdsale.tokensReservedFor(0));
 
