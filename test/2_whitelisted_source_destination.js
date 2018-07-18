@@ -5,6 +5,9 @@ const MRC_Crowdsale = artifacts.require("./MRC_Crowdsale.sol");
 import {
   advanceBlock
 } from './helpers/advanceToBlock.js';
+import {
+  duration
+} from "./helpers/increaseTime";
 
 import expectThrow from './helpers/expectThrow';
 import crowdsaleMock from "./helpers/mocks/crowdsaleMock";
@@ -28,7 +31,13 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
     let mock = crowdsaleMock();
     let wallet = accounts[9];
 
-    crowdsale = await MRC_Crowdsale.new(mock.rate, wallet, token.address, mock.reservations);
+    const OPENING = web3.eth.getBlock("latest").timestamp;
+    const ICO_START = OPENING + duration.hours(1);
+    const CLOSING = ICO_START + duration.hours(1);
+    const TIMINGS = [OPENING, ICO_START, CLOSING];
+
+    crowdsale = await MRC_Crowdsale.new(mock.rate, wallet, token.address, mock.reservations, TIMINGS);
+    await token.transferOwnership(crowdsale.address);
   });
 
   describe("add to whiteist functional", () => {
