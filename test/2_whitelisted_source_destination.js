@@ -100,7 +100,7 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
 
     });
 
-    it.only("should not allow any destination address to be 0", async () => {
+    it("should not allow any destination address to be 0", async () => {
       let ACC_3 = accounts[3];
       let ACC_4 = accounts[4];
       await expectThrow(crowdsale.addManyToWhitelist([ACC_1, 0], [ACC_2, ACC_4]), "destination address in array is 0, which is not allowed");
@@ -133,4 +133,6 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
       assert.equal(await crowdsale.whitelist.call(ACC_3), ACC_4, "wrong destination for ACC_3");
     });
   });
+
+
 });
