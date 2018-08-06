@@ -63,6 +63,14 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
       await crowdsale.addToWhitelist(ACC_1, ACC_1);
       assert.equal(await crowdsale.whitelist.call(ACC_1), ACC_1, "wrong destination for ACC_1, should be again ACC_1");
     });
+
+    it("should not allow source address to be 0", async () => {
+      await expectThrow(crowdsale.addToWhitelist(0, ACC_2), "source address can not be 0");
+    });
+
+    it("should not allow destination address to be 0", async () => {
+      await expectThrow(crowdsale.addToWhitelist(ACC_1, 0), "destination address can not be 0");
+    });
   });
 
   describe("add many to whiteist functional", () => {
@@ -76,13 +84,27 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
       }), "should not allow not owner to add");
     });
 
-    it("shoould validate correct relation in whitelist after addManyToWhitelist", async () => {
+    it("should validate correct relation in whitelist after addManyToWhitelist", async () => {
       let ACC_3 = accounts[3];
       let ACC_4 = accounts[4];
       await crowdsale.addManyToWhitelist([ACC_1, ACC_3], [ACC_2, ACC_4]);
 
       assert.equal(await crowdsale.whitelist.call(ACC_1), ACC_2, "wrong destination for ACC_1");
       assert.equal(await crowdsale.whitelist.call(ACC_3), ACC_4, "wrong destination for ACC_3");
+    });
+
+    it("should not allow any source address to be 0", async () => {
+      let ACC_3 = accounts[3];
+      let ACC_4 = accounts[4];
+      await expectThrow(crowdsale.addManyToWhitelist([ACC_1, ACC_3], [0, ACC_4]), "source address in array is 0, which is not allowed");
+
+    });
+
+    it.only("should not allow any destination address to be 0", async () => {
+      let ACC_3 = accounts[3];
+      let ACC_4 = accounts[4];
+      await expectThrow(crowdsale.addManyToWhitelist([ACC_1, 0], [ACC_2, ACC_4]), "destination address in array is 0, which is not allowed");
+
     });
   });
 
@@ -101,7 +123,7 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
       }), "should not allow not owner to add");
     });
 
-    it("shoould validate correct relation in whitelist after addToWhitelist", async () => {
+    it("should validate correct relation in whitelist after addToWhitelist", async () => {
       let ACC_3 = accounts[3];
       let ACC_4 = accounts[4];
       await crowdsale.addToWhitelist(ACC_1, ACC_2);
