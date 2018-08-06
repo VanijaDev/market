@@ -22,8 +22,8 @@ contract MRC_WhitelistedSourceDestination is Ownable {
    * @param _destination Address to be added to the whitelist as token destination address
    */
   function addToWhitelist(address _source, address _destination) external onlyOwner {
-    require(_source != address(0), "source address cannot be set to 0");  // TODO: test
-    require(_destination != address(0), "destination address cannot be set to 0");  // TODO: test
+    require(_source != address(0), "source address cannot be set to 0");
+    require(_destination != address(0), "destination address cannot be set to 0");
 
     whitelist[_source] = _destination;
   }
@@ -34,11 +34,11 @@ contract MRC_WhitelistedSourceDestination is Ownable {
    * @param _destinations Addressees to be added to the whitelist as token destination addresses
    */
   function addManyToWhitelist(address[] _sources, address[] _destinations) external onlyOwner {
-    require(_sources.length == _destinations.length, "sources and destinations arrays length are not equal");  // TODO: test
+    require(_sources.length == _destinations.length, "sources and destinations arrays length are not equal");
 
     for (uint256 i = 0; i < _sources.length; i++) {
-      require(_sources[i] != address(0), "sources[i] address cannot be set to 0");  // TODO: test
-      require(_destinations[i] != address(0), "destination[i] address cannot be set to 0");  // TODO: test
+      require(_sources[i] != address(0), "sources[i] address cannot be set to 0");
+      require(_destinations[i] != address(0), "destination[i] address cannot be set to 0");
 
       whitelist[_sources[i]] = _destinations[i];
     }
