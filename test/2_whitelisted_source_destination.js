@@ -106,6 +106,15 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
       await expectThrow(crowdsale.addManyToWhitelist([ACC_1, 0], [ACC_2, ACC_4]), "destination address in array is 0, which is not allowed");
 
     });
+
+    it("should validate equal source and destination addresses", async () => {
+      let ACC_3 = accounts[3];
+      let ACC_4 = accounts[4];
+      let ACC_5 = accounts[5];
+      await expectThrow(crowdsale.addManyToWhitelist([ACC_1, ACC_3, ACC_5], [ACC_2, ACC_4]), "source addresses are more then destination, which is not allowed");
+
+      await expectThrow(crowdsale.addManyToWhitelist([ACC_1, ACC_3], [ACC_2, ACC_4, ACC_5]), "destination addresses are more then source, which is not allowed");
+    });
   });
 
   describe("remove from whiteist functional", () => {
@@ -133,6 +142,4 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
       assert.equal(await crowdsale.whitelist.call(ACC_3), ACC_4, "wrong destination for ACC_3");
     });
   });
-
-
 });
