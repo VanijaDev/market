@@ -5,6 +5,11 @@ import "../node_modules/openzeppelin-solidity/contracts/crowdsale/validation/Tim
 
 import "./MRC_Token.sol";
 
+/**
+  * timing
+  * minWei
+  * stages
+ */
 
 contract MRC_StagesCrowdsale is TimedCrowdsale {
 
@@ -18,7 +23,17 @@ contract MRC_StagesCrowdsale is TimedCrowdsale {
   constructor(uint256 _rate, address _wallet, ERC20 _token, uint256[] _timings) 
     Crowdsale(_rate, _wallet, _token)
     TimedCrowdsale(_timings[0], _timings[2]) public {
+  }
 
-
+  /**
+   * @dev Checks whether the period in which the crowdsale is open has already started.
+   * @return Whether crowdsale period has started
+   */
+  function hasOpened() public view returns (bool) {
+    // solium-disable-next-line security/no-block-members
+    return block.timestamp > openingTime;
   }
 }
+
+
+// TODO: implement finishMinting()
