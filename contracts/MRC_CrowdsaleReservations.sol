@@ -25,10 +25,10 @@ contract MRC_CrowdsaleReservations is Ownable {
     _;
   }
 
-  event TeamReserveTransfered(address indexed _address, uint256 indexed _amount);
-  event BountyReserveTransfered(address indexed _address, uint256 indexed _amount);
-  event DevelopmentReserveTransfered(address indexed _address, uint256 indexed _amount);
-  event SaleReserveTransfered(address indexed _address, uint256 indexed _amount);
+  event TeamReserveTransferred(address indexed _address, uint256 indexed _amount);
+  event BountyReserveTransferred(address indexed _address, uint256 indexed _amount);
+  event DevelopmentReserveTransferred(address indexed _address, uint256 indexed _amount);
+  event SaleReserveTransferred(address indexed _address, uint256 indexed _amount);
 
   function tokensReservedFor(ReservePurpose _reservePurpose) public view returns(uint256) {
     return pendingReservations[uint8(_reservePurpose)];
