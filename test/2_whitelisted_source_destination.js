@@ -51,7 +51,7 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
       }), "should not allow not owner to add");
     });
 
-    it("shoould validate correct relation in whitelist after addToWhitelist", async () => {
+    it("should validate correct relation in whitelist after addToWhitelist", async () => {
       let ACC_3 = accounts[3];
       let ACC_4 = accounts[4];
       await crowdsale.addToWhitelist(ACC_1, ACC_2);
