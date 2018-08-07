@@ -14,10 +14,6 @@ import expectThrow from './helpers/expectThrow';
 import crowdsaleMock from "./helpers/mocks/crowdsaleMock";
 
 contract("Timing", (accounts) => {
-  const OWNER = accounts[0];
-  const ACC_1 = accounts[1];
-  const ACC_2 = accounts[2];
-
   let token;
   let crowdsale;
 
