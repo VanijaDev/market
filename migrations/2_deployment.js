@@ -10,9 +10,9 @@ module.exports = async function (deployer, network, accounts) {
     await deployer.deploy(MRC_Token).then(async () => {
         let token = await MRC_Token.deployed();
 
-        const OPENING = web3.eth.getBlock("latest").timestamp + IncreaseTime.duration.hours(1);
-        const ICO_START = OPENING + IncreaseTime.duration.hours(1);
-        const CLOSING = ICO_START + IncreaseTime.duration.hours(1);
+        const OPENING = web3.eth.getBlock("latest").timestamp + IncreaseTime.duration.hours(1); //  TODO: set before deploy
+        const ICO_START = OPENING + IncreaseTime.duration.hours(1); //  TODO: set before deploy
+        const CLOSING = ICO_START + IncreaseTime.duration.hours(1); //  TODO: set before deploy
         const TIMINGS = [OPENING, ICO_START, CLOSING];
 
         const RESERVE_TEAM = 14;
