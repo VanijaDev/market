@@ -96,7 +96,7 @@ contract("Reservations", (accounts) => {
 
       assert.equal(logs.length, 1, "should be 1 event");
       let log = logs[0];
-      assert.equal(log.event, "TeamReserveTransfered", "wrong event on team reservation transfer");
+      assert.equal(log.event, "TeamReserveTransferred", "wrong event on team reservation transfer");
       assert.equal(log.args._address, ACC_1, "wrong address on event on team reservation transfer");
       assert.equal(new BigNumber(log.args._amount).toNumber(), tokens.toNumber(), "wrong tokens on event on team reservation transfer");
     });
@@ -109,7 +109,7 @@ contract("Reservations", (accounts) => {
 
       assert.equal(logs.length, 1, "should be 1 event");
       let log = logs[0];
-      assert.equal(log.event, "BountyReserveTransfered", "wrong event on bounty reservation transfer");
+      assert.equal(log.event, "BountyReserveTransferred", "wrong event on bounty reservation transfer");
       assert.equal(log.args._address, ACC_1, "wrong address on event on bounty reservation transfer");
       assert.equal(new BigNumber(log.args._amount).toNumber(), tokens.toNumber(), "wrong tokens on event on bounty reservation transfer");
     });
@@ -122,7 +122,7 @@ contract("Reservations", (accounts) => {
 
       assert.equal(logs.length, 1, "should be 1 event");
       let log = logs[0];
-      assert.equal(log.event, "DevelopmentReserveTransfered", "wrong event on development reservation transfer");
+      assert.equal(log.event, "DevelopmentReserveTransferred", "wrong event on development reservation transfer");
       assert.equal(log.args._address, ACC_1, "wrong address on event on development reservation transfer");
       assert.equal(new BigNumber(log.args._amount).toNumber(), tokens.toNumber(), "wrong tokens on event on development reservation transfer");
     });
@@ -135,7 +135,7 @@ contract("Reservations", (accounts) => {
 
       assert.equal(logs.length, 1, "should be 1 event");
       let log = logs[0];
-      assert.equal(log.event, "SaleReserveTransfered", "wrong event on sale cost reservation transfer");
+      assert.equal(log.event, "SaleReserveTransferred", "wrong event on sale cost reservation transfer");
       assert.equal(log.args._address, ACC_1, "wrong address on event on sale cost reservation transfer");
       assert.equal(new BigNumber(log.args._amount).toNumber(), tokens.toNumber(), "wrong tokens on event on sale cost reservation transfer");
     });

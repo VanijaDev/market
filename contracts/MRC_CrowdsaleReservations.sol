@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
 
 
 /**
@@ -30,8 +31,64 @@ contract MRC_CrowdsaleReservations is Ownable {
   event DevelopmentReserveTransferred(address indexed _address, uint256 indexed _amount);
   event SaleReserveTransferred(address indexed _address, uint256 indexed _amount);
 
+  ERC20 internal token;
+
+  constructor (ERC20 _token) public {
+    token = _token;
+  }
+
   function tokensReservedFor(ReservePurpose _reservePurpose) public view returns(uint256) {
     return pendingReservations[uint8(_reservePurpose)];
+  }
+
+  
+  /**
+   * PUBLIC
+   */
+
+  //  reservation transfers
+  function transferTeamReservation(address _address) public
+    onlyOwner
+    nonZeroAddressOnly(_address)
+    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.team) {
+      uint256 tokens = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.team);
+      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.team);
+
+      MintableToken(token).mint(_address, tokens);
+      emit TeamReserveTransferred(_address, tokens);
+  }
+
+  function transferBountyReservation(address _address) public
+    onlyOwner
+    nonZeroAddressOnly(_address)
+    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.bounty) {
+      uint256 tokens = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.bounty);
+      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.bounty);
+
+      MintableToken(token).mint(_address, tokens);
+      emit BountyReserveTransferred(_address, tokens);
+  }
+
+  function transferDevelopmentReservation(address _address) public
+    onlyOwner
+    nonZeroAddressOnly(_address)
+    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.development) {
+      uint256 tokens = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.development);
+      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.development);
+
+      MintableToken(token).mint(_address, tokens);
+      emit DevelopmentReserveTransferred(_address, tokens);
+  }
+
+  function transferSaleReservation(address _address) public
+    onlyOwner
+    nonZeroAddressOnly(_address)
+    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.sale) {
+      uint256 tokens = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.sale);
+      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.sale);
+
+      MintableToken(token).mint(_address, tokens);
+      emit SaleReserveTransferred(_address, tokens);
   }
 
   /**

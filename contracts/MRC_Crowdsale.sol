@@ -20,58 +20,10 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
    * @param _reservationPercents  Crowdsale res: [RESERVE_TEAM, RESERVE_BOUNTY, RESERVE_DEVELOPMENT, RESERVE_SALE_COST]
    * @param _timings              Crowdsale timings: [OPENING, ICO_START, CLOSING]
    */
-  constructor(uint256 _rate, address _wallet, ERC20 _token, uint8[] _reservationPercents, uint256[] _timings) MRC_StagesCrowdsale(_rate, _wallet, _token, _timings) public {
+  constructor(uint256 _rate, address _wallet, ERC20 _token, uint8[] _reservationPercents, uint256[] _timings) MRC_StagesCrowdsale(_rate, _wallet, _token, _timings) MRC_CrowdsaleReservations(_token) public {
     token = MRC_Token(_token);
+    
     calculateTokenReservations(_reservationPercents, token.totalSupplyMax());
-  }
-
-  /**
-   * PUBLIC
-   */
-
-  //  reservation transfers
-  function transferTeamReservation(address _address) public
-    onlyOwner
-    nonZeroAddressOnly(_address)
-    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.team) {
-      uint256 teamTokensReserve = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.team);
-      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.team);
-
-      token.mint(_address, teamTokensReserve);
-      emit TeamReserveTransfered(_address, teamTokensReserve);
-  }
-
-  function transferBountyReservation(address _address) public
-    onlyOwner
-    nonZeroAddressOnly(_address)
-    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.bounty) {
-      uint256 bountyTokensReserve = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.bounty);
-      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.bounty);
-
-      token.mint(_address, bountyTokensReserve);
-      emit BountyReserveTransfered(_address, bountyTokensReserve);
-  }
-
-  function transferDevelopmentReservation(address _address) public
-    onlyOwner
-    nonZeroAddressOnly(_address)
-    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.development) {
-      uint256 developmentTokensReserve = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.development);
-      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.development);
-
-      token.mint(_address, developmentTokensReserve);
-      emit DevelopmentReserveTransfered(_address, developmentTokensReserve);
-  }
-
-  function transferSaleReservation(address _address) public
-    onlyOwner
-    nonZeroAddressOnly(_address)
-    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.sale) {
-      uint256 saleTokensReserve = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.sale);
-      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.sale);
-
-      token.mint(_address, saleTokensReserve);
-      emit SaleReserveTransfered(_address, saleTokensReserve);
   }
 
 
