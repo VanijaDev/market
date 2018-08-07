@@ -26,6 +26,19 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
     calculateTokenReservations(_reservationPercents, token.totalSupplyMax());
   }
 
+  /**
+   * PUBLIC
+   */
+
+  /**
+   * @dev Owner can manually mint tokens to addresses.
+   * @param _to Token beneficiary
+   * @param _amount Token amount to be minted
+   */
+  function manualMint(address _to, uint256 _amount) public onlyOwner nonZeroAddressOnly(_to) {
+    require(_amount > 0, "mint amount should be > 0");
+    token.mint(_to, _amount);
+  }
 
   /**
    * OVERRIDEN
