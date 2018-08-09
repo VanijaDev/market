@@ -41,8 +41,8 @@ contract("Timing", (accounts) => {
 
     it("should valide hasOpened is true after crowdsale open timestamp", async () => {
       let opening = new BigNumber(await crowdsale.openingTime.call());
-      await increaseTimeTo(opening + duration.hours(1));
-      assert.isTrue(await crowdsale.hasOpened.call(), "should not be opened yet");
+      await increaseTimeTo(opening.plus(duration.hours(1)));
+      assert.isTrue(await crowdsale.hasOpened.call(), "should be already opened");
     });
   });
 });
