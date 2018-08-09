@@ -36,7 +36,7 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
     const CLOSING = ICO_START + duration.hours(1);
     const TIMINGS = [OPENING, ICO_START, CLOSING];
 
-    crowdsale = await MRC_Crowdsale.new(mock.rate, wallet, token.address, mock.reservations, TIMINGS);
+    crowdsale = await MRC_Crowdsale.new(mock.rate, token.address, wallet, mock.reservations, TIMINGS);
     await token.transferOwnership(crowdsale.address);
   });
 
