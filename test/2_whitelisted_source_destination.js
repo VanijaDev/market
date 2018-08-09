@@ -21,11 +21,9 @@ contract("MRC_WhitelistedSourceDestination", (accounts) => {
   let token;
   let crowdsale;
 
-  before("setup", async () => {
-    await advanceBlock();
-  });
-
   beforeEach("create new instances", async () => {
+    await advanceBlock();
+
     token = await MRC_Token.new();
 
     let mock = crowdsaleMock();

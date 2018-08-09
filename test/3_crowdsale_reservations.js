@@ -20,11 +20,9 @@ contract("Reservations", (accounts) => {
   let token;
   let crowdsale;
 
-  before("setup", async () => {
-    await advanceBlock();
-  });
-
   beforeEach("create crowdsale inst", async () => {
+    await advanceBlock();
+
     token = await MRC_Token.new();
 
     let mock = crowdsaleMock();
