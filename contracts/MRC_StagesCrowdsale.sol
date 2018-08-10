@@ -13,6 +13,15 @@ import "./MRC_Token.sol";
 
 contract MRC_StagesCrowdsale is TimedCrowdsale {
 
+  // TODO: test
+  uint256 public investmentMinPreICO = 1.5 * (10 ** 18);
+  uint256 public investmentMaxPreICO = 35 * (10 ** 18);
+// TODO: test
+  uint256 public investmentMinICO = 0.5 * (10 ** 18);
+  uint256 public investmentMaxICO = 20 * (10 ** 18);
+
+  uint256 public icoStageStartTimestamp;
+
   /**
    * @dev Constructor, takes crowdsale opening and closing times.
    * @param _rate     Crowdsale token per ETH rate
@@ -23,6 +32,8 @@ contract MRC_StagesCrowdsale is TimedCrowdsale {
   constructor(uint256 _rate, address _wallet, ERC20 _token, uint256[] _timings) 
     Crowdsale(_rate, _wallet, _token)
     TimedCrowdsale(_timings[0], _timings[2]) public {
+
+      icoStageStartTimestamp = _timings[1];
   }
 
   /**
@@ -32,6 +43,26 @@ contract MRC_StagesCrowdsale is TimedCrowdsale {
   function hasOpened() public view returns (bool) {
     // solium-disable-next-line security/no-block-members
     return block.timestamp > openingTime;
+  }
+// TODO: test
+  /**
+   * @dev Checks whether ICO stage has already started.
+   * @return Whether ICO stage has already started
+   */
+  function icoStageHasStarted() public view returns(bool) {
+    return now >= icoStageStartTimestamp;
+  }
+// TODO: test
+  /**
+   * @dev Checks whether wei amount is valid for current stage investment limits.
+   * @return Whether wei amount is valid for current stage investment limits
+   */
+  function withinInvestmentlimits(uint256 _wei) internal view returns(bool) {
+    if (icoStageHasStarted()) {
+      return _wei >= investmentMinICO && _wei <= investmentMaxICO;
+    }
+
+    return _wei >= investmentMinPreICO && _wei <= investmentMaxPreICO;
   }
 }
 
