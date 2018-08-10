@@ -53,54 +53,54 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
    * OVERRIDEN
    */
 
-  //  /**
-  //  * @dev Extend parent behavior requiring beneficiary to be in whitelist.
-  //  * @param _beneficiary Token beneficiary
-  //  * @param _weiAmount Amount of wei contributed
-  //  */
-  // function _preValidatePurchase(
-  //   address _beneficiary,
-  //   uint256 _weiAmount
-  // )
-  //   internal
-  //   isWhitelisted(_beneficiary)
+   /**
+   * @dev Extend parent behavior requiring beneficiary to be in whitelist.
+   * @param _beneficiary Token beneficiary
+   * @param _weiAmount Amount of wei contributed
+   */
+  function _preValidatePurchase(
+    address _beneficiary,
+    uint256 _weiAmount
+  )
+    internal
+    isWhitelisted(_beneficiary)
 
-  // {
-  //   require(withinInvestmentlimits(_weiAmount), "purchase wei is not within limit range");
-  //   super._preValidatePurchase(_beneficiary, _weiAmount);
-  // }
+  {
+    require(withinInvestmentlimits(_weiAmount), "purchase wei is not within limit range");
+    super._preValidatePurchase(_beneficiary, _weiAmount);
+  }
 
-  // /**
-  //  * @dev Override to extend the way in which ether is converted to tokens.
-  //  * @param _weiAmount Value in wei to be converted into tokens
-  //  * @return Number of tokens that can be purchased with the specified _weiAmount
-  //  */
-  // function _getTokenAmount(uint256 _weiAmount)
-  //   internal view returns (uint256)
-  // {
-  //   return _weiAmount.mul(rate).div(10 ** 10);
-  // }
+  /**
+   * @dev Override to extend the way in which ether is converted to tokens.
+   * @param _weiAmount Value in wei to be converted into tokens
+   * @return Number of tokens that can be purchased with the specified _weiAmount
+   */
+  function _getTokenAmount(uint256 _weiAmount)
+    internal view returns (uint256)
+  {
+    return _weiAmount.mul(rate).div(10 ** 10);
+  }
 
-  // /**
-  //  * @dev Source of tokens. Override this method to modify the way in which the crowdsale ultimately gets and sends its tokens.
-  //  * @param _beneficiary Address performing the token purchase
-  //  * @param _tokenAmount Number of tokens to be emitted
-  //  */
-  // function _deliverTokens(
-  //   address _beneficiary,
-  //   uint256 _tokenAmount
-  // )
-  //   internal
-  // {
-  //   token.mint(_beneficiary, _tokenAmount);
-  // }
+  /**
+   * @dev Source of tokens. Override this method to modify the way in which the crowdsale ultimately gets and sends its tokens.
+   * @param _beneficiary Address performing the token purchase
+   * @param _tokenAmount Number of tokens to be emitted
+   */
+  function _deliverTokens(
+    address _beneficiary,
+    uint256 _tokenAmount
+  )
+    internal
+  {
+    token.mint(_beneficiary, _tokenAmount);
+  }
 
-  // /**
-  //  * @dev Determines how ETH is stored/forwarded on purchases.
-  //  */
-  // function _forwardFunds() internal {
-  //   wallet.transfer(msg.value);
-  // }
+  /**
+   * @dev Determines how ETH is stored/forwarded on purchases.
+   */
+  function _forwardFunds() internal {
+    wallet.transfer(msg.value);
+  }
 
   /**
    * PRIVATE
