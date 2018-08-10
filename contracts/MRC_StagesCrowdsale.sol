@@ -17,6 +17,9 @@ contract MRC_StagesCrowdsale is TimedCrowdsale {
   uint256 public investmentMinICO = 0.5 * (10 ** 18);
   uint256 public investmentMaxICO = 20 * (10 ** 18);
 
+  uint256 public discountPercentPreICO = 40;
+  uint256 public discountPercentICO = 20;
+
   uint256 public icoStageStartTimestamp;
 
   /**
@@ -43,14 +46,6 @@ contract MRC_StagesCrowdsale is TimedCrowdsale {
   }
 
   /**
-   * @dev Checks whether ICO stage has already started.
-   * @return Whether ICO stage has already started
-   */
-  function icoStageHasStarted() public view returns(bool) {
-    return now >= icoStageStartTimestamp;
-  }
-
-  /**
    * @dev Checks whether wei amount is valid for current stage investment limits.
    * @return Whether wei amount is valid for current stage investment limits
    */
@@ -60,6 +55,31 @@ contract MRC_StagesCrowdsale is TimedCrowdsale {
     }
 
     return _wei >= investmentMinPreICO && _wei <= investmentMaxPreICO;
+  }
+
+
+  /**
+   * INTERNAL
+   */
+
+  /**
+   * @dev Checks current discount percent based on crowdsale stage.
+   * @return discount percent
+   */
+  function currentDiscountPercent() public view returns(uint256) {
+    return icoStageHasStarted() ? discountPercentICO : discountPercentPreICO;
+  }
+
+  /**
+   * PRIVATE
+   */
+
+  /**
+   * @dev Checks whether ICO stage has already started.
+   * @return Whether ICO stage has already started
+   */
+  function icoStageHasStarted() private view returns(bool) {
+    return now >= icoStageStartTimestamp;
   }
 }
 

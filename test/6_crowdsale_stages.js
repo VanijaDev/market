@@ -112,4 +112,54 @@ contract("Stages", (accounts) => {
             }), "should throw because wei > ICO limit");
         });
     });
+
+    describe("token calculations", () => {
+        it("should correctly calculate and summarise bonus tokens for preICO", async () => {
+            await crowdsale.sendTransaction({
+                from: ACC_1,
+                value: ether(2)
+            });
+            //  baseTokens = 1500 * 1ETH = 3000 0000 0000
+            //  bonus for preICO = base * 40 / 100 = 1200 0000 0000
+            const TOKENS = new BigNumber(420000000000);
+
+            assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS.toNumber(), "wrong tokens after preICO purchase");
+        });
+
+        it("should correctly calculate and summarise bonus tokens for ICO", async () => {
+            await increaseTimeTo(await crowdsale.icoStageStartTimestamp.call());
+
+            await crowdsale.sendTransaction({
+                from: ACC_1,
+                value: ether(2)
+            });
+            //  baseTokens = 1500 * 2ETH = 3000 0000 0000
+            //  bonus for ICO = base * 20 / 100 = 600 0000 0000
+            const TOKENS = new BigNumber(360000000000);
+
+            assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS.toNumber(), "wrong tokens after ICO purchase");
+        });
+
+        it("should correctly calculate and summarise bonus tokens for both preICO and ICO purchases", async () => {
+            await crowdsale.sendTransaction({
+                from: ACC_1,
+                value: ether(2)
+            });
+            //  baseTokens = 1500 * 1ETH = 3000 0000 0000
+            //  bonus for preICO = base * 40 / 100 = 1200 0000 0000
+            const TOKENS_PRE_ICO = new BigNumber(420000000000);
+
+
+            await increaseTimeTo(await crowdsale.icoStageStartTimestamp.call());
+            await crowdsale.sendTransaction({
+                from: ACC_1,
+                value: ether(2)
+            });
+            //  baseTokens = 1500 * 2ETH = 3000 0000 0000
+            //  bonus for ICO = base * 20 / 100 = 600 0000 0000
+            const TOKENS_ICO = new BigNumber(360000000000);
+
+            assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS_PRE_ICO.plus(TOKENS_ICO).toNumber(), "wrong tokens after preICO and ICO purchases");
+        });
+    });
 });

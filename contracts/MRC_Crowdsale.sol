@@ -78,7 +78,12 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
   function _getTokenAmount(uint256 _weiAmount)
     internal view returns (uint256)
   {
-    return _weiAmount.mul(rate).div(10 ** 10);
+    uint256 baseTokens = _weiAmount.mul(rate).div(10 ** 10);
+
+    uint256 discountPercent = currentDiscountPercent();
+    uint256 bonusTokens = baseTokens.mul(discountPercent).div(100);
+
+    return baseTokens.add(bonusTokens);
   }
 
   /**
