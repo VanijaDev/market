@@ -12,11 +12,8 @@ import "./MRC_Token.sol";
  */
 
 contract MRC_StagesCrowdsale is TimedCrowdsale {
-
-  // TODO: test
   uint256 public investmentMinPreICO = 1.5 * (10 ** 18);
   uint256 public investmentMaxPreICO = 35 * (10 ** 18);
-// TODO: test
   uint256 public investmentMinICO = 0.5 * (10 ** 18);
   uint256 public investmentMaxICO = 20 * (10 ** 18);
 
@@ -44,7 +41,7 @@ contract MRC_StagesCrowdsale is TimedCrowdsale {
     // solium-disable-next-line security/no-block-members
     return block.timestamp > openingTime;
   }
-// TODO: test
+
   /**
    * @dev Checks whether ICO stage has already started.
    * @return Whether ICO stage has already started
@@ -52,7 +49,7 @@ contract MRC_StagesCrowdsale is TimedCrowdsale {
   function icoStageHasStarted() public view returns(bool) {
     return now >= icoStageStartTimestamp;
   }
-// TODO: test
+
   /**
    * @dev Checks whether wei amount is valid for current stage investment limits.
    * @return Whether wei amount is valid for current stage investment limits
