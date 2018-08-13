@@ -11,7 +11,10 @@ import "./MRC_Token.sol";
 contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
   MRC_Token token;
 
-  
+  uint256 public hardCap = 7*(10**18);  //  TODO: correct values before deploy
+  uint256 public softCap = 3*(10**18);  //  TODO: correct values before deploy
+
+
   /**
    * @dev Constructor, takes crowdsale opening and closing times.
    * @param _rate                 Crowdsale token per ETH rate
@@ -30,6 +33,11 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
    * PUBLIC
    */
 
+   // TODO: test only
+   function currentBalance() public view returns(uint256) {
+     return address(this).balance;
+   }
+
   /**
    * @dev Owner can manually mint tokens to addresses.
    * @param _to Token beneficiary
@@ -47,6 +55,10 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
   function updateExchangeRate(uint256 _rate) public onlyOwner {
     require(_rate > 0, "rate should be > 0");
     rate = _rate;
+  }
+
+  function softCapReached() public view returns (bool) {
+    return weiRaised >= softCap;
   }
 
   /**
@@ -104,7 +116,9 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
    * @dev Determines how ETH is stored/forwarded on purchases.
    */
   function _forwardFunds() internal {
-    wallet.transfer(msg.value);
+    if(softCapReached()) {
+      wallet.transfer(address(this).balance);
+    }
   }
 
   /**
