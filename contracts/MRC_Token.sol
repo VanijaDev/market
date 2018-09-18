@@ -4,7 +4,7 @@ import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/MintableToke
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/DetailedERC20.sol";
 
 
-contract MRC_Token is DetailedERC20("Market TEST", "MRKT", 8), MintableToken {
+contract MRC_Token is DetailedERC20("Mercato", "MRC", 8), MintableToken {
   uint256 public totalSupplyMax;
 
   modifier amountWithinMaxLimit(uint256 _amount) {
