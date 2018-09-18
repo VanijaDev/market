@@ -9,8 +9,6 @@ import "./MRC_Token.sol";
 
 
 contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
-  MRC_Token token;
-
   uint256 public hardCap = 7*(10**18);  //  TODO: correct values before deploy
   uint256 public softCap = 3*(10**18);  //  TODO: correct values before deploy
 
@@ -26,17 +24,11 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
   MRC_StagesCrowdsale(_rate, _wallet, _token, _timings)
   MRC_CrowdsaleReservations(_token)
   public {
-    token = MRC_Token(_token);
   }
 
   /**
    * PUBLIC
    */
-
-   // TODO: test only
-   function currentBalance() public view returns(uint256) {
-     return address(this).balance;
-   }
 
   /**
    * @dev Owner can manually mint tokens to addresses.
@@ -45,7 +37,7 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
    */
   function manualMint(address _to, uint256 _amount) public onlyOwner nonZeroAddressOnly(_to) {
     require(_amount > 0, "mint amount should be > 0");
-    token.mint(_to, _amount);
+    _deliverTokens(_to, _amount);
   }
 
   /**
@@ -109,7 +101,7 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
   )
     internal
   {
-    token.mint(_beneficiary, _tokenAmount);
+    MRC_Token(token).mint(_beneficiary, _tokenAmount);
   }
 
   /**
