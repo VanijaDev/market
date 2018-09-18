@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 
 import "../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
-import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
+import "./MRC_Token.sol";
 
 
 /**
@@ -12,9 +12,17 @@ import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/MintableToke
 contract MRC_CrowdsaleReservations is Ownable {
   using SafeMath for uint256;
 
-  enum ReservePurpose {team, bounty, development, sale}
+  uint256 public reservationPercentsTeam = 14;
+  uint256 public reservationPercentsBounty = 5;
+  uint256 public reservationPercentsDevelopment = 15;
+  uint256 public reservationPercentsSale = 1;
 
-  mapping(uint8 => uint256) private pendingReservations;
+  uint256 public pendingReservationTeam;
+  uint256 public pendingReservationBounty;
+  uint256 public pendingReservationDevelopment;
+  uint256 public pendingReservationSale;
+
+  enum ReservePurpose {team, bounty, development, sale}
 
   modifier nonZeroAddressOnly(address _address) {
     require(_address != address(0), "address can not be 0");
@@ -31,14 +39,25 @@ contract MRC_CrowdsaleReservations is Ownable {
   event DevelopmentReserveTransferred(address indexed _address, uint256 indexed _amount);
   event SaleReserveTransferred(address indexed _address, uint256 indexed _amount);
 
-  ERC20 internal token;
+  MRC_Token internal token;
 
   constructor (ERC20 _token) public {
-    token = _token;
+    token = MRC_Token(_token);
+    calculateTokenReservations();
   }
 
   function tokensReservedFor(ReservePurpose _reservePurpose) public view returns(uint256) {
-    return pendingReservations[uint8(_reservePurpose)];
+    if (_reservePurpose == ReservePurpose.team) {
+      return pendingReservationTeam;
+    } else if (_reservePurpose == ReservePurpose.bounty) {
+      return pendingReservationBounty;
+    } else if (_reservePurpose == ReservePurpose.development) {
+      return pendingReservationDevelopment;
+    } else if (_reservePurpose == ReservePurpose.sale) {
+      return pendingReservationSale;
+    } else {
+      revert();
+    }
   }
 
   
@@ -50,68 +69,78 @@ contract MRC_CrowdsaleReservations is Ownable {
   function transferTeamReservation(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
-    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.team) {
-      uint256 tokens = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.team);
-      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.team);
+    reservationExists(ReservePurpose.team) {
+      uint256 tokens = tokensReservedFor(ReservePurpose.team);
+      clearReservation(ReservePurpose.team);
 
-      MintableToken(token).mint(_address, tokens);
+      token.mint(_address, tokens);
       emit TeamReserveTransferred(_address, tokens);
   }
 
   function transferBountyReservation(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
-    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.bounty) {
-      uint256 tokens = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.bounty);
-      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.bounty);
+    reservationExists(ReservePurpose.bounty) {
+      uint256 tokens = tokensReservedFor(ReservePurpose.bounty);
+      clearReservation(ReservePurpose.bounty);
 
-      MintableToken(token).mint(_address, tokens);
+      token.mint(_address, tokens);
       emit BountyReserveTransferred(_address, tokens);
   }
 
   function transferDevelopmentReservation(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
-    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.development) {
-      uint256 tokens = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.development);
-      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.development);
+    reservationExists(ReservePurpose.development) {
+      uint256 tokens = tokensReservedFor(ReservePurpose.development);
+      clearReservation(ReservePurpose.development);
 
-      MintableToken(token).mint(_address, tokens);
+      token.mint(_address, tokens);
       emit DevelopmentReserveTransferred(_address, tokens);
   }
 
   function transferSaleReservation(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
-    reservationExists(MRC_CrowdsaleReservations.ReservePurpose.sale) {
-      uint256 tokens = tokensReservedFor(MRC_CrowdsaleReservations.ReservePurpose.sale);
-      clearReservation(MRC_CrowdsaleReservations.ReservePurpose.sale);
+    reservationExists(ReservePurpose.sale) {
+      uint256 tokens = tokensReservedFor(ReservePurpose.sale);
+      clearReservation(ReservePurpose.sale);
 
-      MintableToken(token).mint(_address, tokens);
+      token.mint(_address, tokens);
       emit SaleReserveTransferred(_address, tokens);
   }
+
 
   /**
    * INTERNAL
    */
 
+  function clearReservation(ReservePurpose _reservePurpose) internal onlyOwner reservationExists(_reservePurpose) {
+    if (_reservePurpose == ReservePurpose.team) {
+      pendingReservationTeam = 0;
+    } else if (_reservePurpose == ReservePurpose.bounty) {
+      pendingReservationBounty = 0;
+    } else if (_reservePurpose == ReservePurpose.development) {
+      pendingReservationDevelopment = 0;
+    } else if (_reservePurpose == ReservePurpose.sale) {
+      pendingReservationSale = 0;
+    } else {
+      revert();
+    }
+  } 
+
+
+  /**
+   * PRIVATE
+   */
+
   /**
    * @dev Calculates reservation token amount based on provided percents.
-   * @param _reservationPercents Array of token reservation percantages:
-   * 0 - team
-   * 1 - bounty program
-   * 2 - development fund
-   * 3 - token sale cost
    */
-  function calculateTokenReservations(uint8[] _reservationPercents, uint256 _totalSupplyMax) internal {
-    for(uint8 i = 0; i < _reservationPercents.length; i ++) {
-      require(_reservationPercents[i] > 0, "reserve must be > 0");
-
-      pendingReservations[i] = uint256(_reservationPercents[i]).mul(_totalSupplyMax).div(100);
-    }
+  function calculateTokenReservations() private {
+    pendingReservationTeam = reservationPercentsTeam.mul(token.totalSupplyMax()).div(100);
+    pendingReservationBounty = reservationPercentsBounty.mul(token.totalSupplyMax()).div(100);
+    pendingReservationDevelopment = reservationPercentsDevelopment.mul(token.totalSupplyMax()).div(100);
+    pendingReservationSale = reservationPercentsSale.mul(token.totalSupplyMax()).div(100);
   }
-
-  function clearReservation(ReservePurpose _reservePurpose) internal onlyOwner reservationExists(_reservePurpose) {
-    pendingReservations[uint8(_reservePurpose)] = 0;
-  } 
 }

@@ -15,13 +15,7 @@ module.exports = async function (deployer, network, accounts) {
         const CLOSING = ICO_START + IncreaseTime.duration.hours(1); //  TODO: set before deploy
         const TIMINGS = [OPENING, ICO_START, CLOSING];
 
-        const RESERVE_TEAM = 14;
-        const RESERVE_BOUNTY = 5;
-        const RESERVE_DEVELOPMENT = 15;
-        const RESERVE_SALE_COST = 1;
-        const RESERVATIONS = [RESERVE_TEAM, RESERVE_BOUNTY, RESERVE_DEVELOPMENT, RESERVE_SALE_COST];
-
-        let crowdsale = await deployer.deploy(MRC_Crowdsale, RATE, token.address, WALLET, RESERVATIONS, TIMINGS);
+        let crowdsale = await deployer.deploy(MRC_Crowdsale, RATE, token.address, WALLET, TIMINGS);
         await token.transferOwnership(crowdsale.address);
     });
 }
