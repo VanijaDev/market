@@ -1,6 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
+import "../node_modules/openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol";
 
 import "./MRC_WhitelistedSourceDestination.sol";
 import "./MRC_CrowdsaleReservations.sol";
@@ -8,7 +9,7 @@ import "./MRC_StagesCrowdsale.sol";
 import "./MRC_Token.sol";
 
 
-contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
+contract MRC_Crowdsale is MintedCrowdsale, MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
   uint256 public softCap = 3*(10**18);  //  TODO: correct values before deploy
   uint256 public hardCap = 7*(10**18);  //  TODO: correct values before deploy
 
@@ -53,6 +54,12 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
     return weiRaised >= softCap;
   }
 
+//  TODO: must be closed
+  // function transferUnspentTokens(address _to) public onlyOwner {
+  //   uint256 unspentTokens = MRC_Token(token).totalSupplyMax().sub(token.totalSupply());
+  //   _deliverTokens(_to, unspentTokens);
+  // }
+
   /**
    * OVERRIDEN
    */
@@ -96,13 +103,16 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
    * @param _beneficiary Address performing the token purchase
    * @param _tokenAmount Number of tokens to be emitted
    */
+   // TEST max mint amount
   function _deliverTokens(
     address _beneficiary,
     uint256 _tokenAmount
   )
     internal
+    nonZeroAddressOnly(_beneficiary)
   {
-    MRC_Token(token).mint(_beneficiary, _tokenAmount);
+    require(_tokenAmount > 0, "token amount to deliver must be > 0");
+    super._deliverTokens(_beneficiary, _tokenAmount);
   }
 
   /**
