@@ -67,7 +67,7 @@ contract MRC_Crowdsale is MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDe
     uint256 _weiAmount
   )
     internal
-    isWhitelisted(_beneficiary)
+    whitelistedOnly(_beneficiary)
 
   {
     require(withinInvestmentlimits(_weiAmount), "purchase wei is not within limit range");
