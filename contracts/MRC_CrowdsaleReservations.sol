@@ -29,7 +29,11 @@ contract MRC_CrowdsaleReservations is Ownable {
     _;
   }
 
-  modifier reservationExists(ReservePurpose _reservePurpose) {
+  /**
+   * @dev Checks if reservation was not spent.
+   * @param _reservePurpose Reservation purpose
+   */
+  modifier reservationPending(ReservePurpose _reservePurpose) {
     require(tokensReservedFor(_reservePurpose) > 0);
     _;
   }
@@ -55,8 +59,6 @@ contract MRC_CrowdsaleReservations is Ownable {
       return pendingReservationDevelopment;
     } else if (_reservePurpose == ReservePurpose.sale) {
       return pendingReservationSale;
-    } else {
-      revert();
     }
   }
 
@@ -69,10 +71,11 @@ contract MRC_CrowdsaleReservations is Ownable {
   function transferTeamReservation(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
-    reservationExists(ReservePurpose.team) {
+    reservationPending(ReservePurpose.team) {
       uint256 tokens = tokensReservedFor(ReservePurpose.team);
-      clearReservation(ReservePurpose.team);
+      require(tokens > 0, "reserved tokens must be > 0");
 
+      clearReservation(ReservePurpose.team);
       token.mint(_address, tokens);
       emit TeamReserveTransferred(_address, tokens);
   }
@@ -80,10 +83,11 @@ contract MRC_CrowdsaleReservations is Ownable {
   function transferBountyReservation(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
-    reservationExists(ReservePurpose.bounty) {
+    reservationPending(ReservePurpose.bounty) {
       uint256 tokens = tokensReservedFor(ReservePurpose.bounty);
-      clearReservation(ReservePurpose.bounty);
+      require(tokens > 0, "reserved tokens must be > 0");
 
+      clearReservation(ReservePurpose.bounty);
       token.mint(_address, tokens);
       emit BountyReserveTransferred(_address, tokens);
   }
@@ -91,10 +95,11 @@ contract MRC_CrowdsaleReservations is Ownable {
   function transferDevelopmentReservation(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
-    reservationExists(ReservePurpose.development) {
+    reservationPending(ReservePurpose.development) {
       uint256 tokens = tokensReservedFor(ReservePurpose.development);
-      clearReservation(ReservePurpose.development);
+      require(tokens > 0, "reserved tokens must be > 0");
 
+      clearReservation(ReservePurpose.development);
       token.mint(_address, tokens);
       emit DevelopmentReserveTransferred(_address, tokens);
   }
@@ -102,10 +107,11 @@ contract MRC_CrowdsaleReservations is Ownable {
   function transferSaleReservation(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
-    reservationExists(ReservePurpose.sale) {
+    reservationPending(ReservePurpose.sale) {
       uint256 tokens = tokensReservedFor(ReservePurpose.sale);
+      require(tokens > 0, "reserved tokens must be > 0");
+      
       clearReservation(ReservePurpose.sale);
-
       token.mint(_address, tokens);
       emit SaleReserveTransferred(_address, tokens);
   }
@@ -115,7 +121,7 @@ contract MRC_CrowdsaleReservations is Ownable {
    * INTERNAL
    */
 
-  function clearReservation(ReservePurpose _reservePurpose) internal onlyOwner reservationExists(_reservePurpose) {
+  function clearReservation(ReservePurpose _reservePurpose) internal {
     if (_reservePurpose == ReservePurpose.team) {
       pendingReservationTeam = 0;
     } else if (_reservePurpose == ReservePurpose.bounty) {
@@ -124,8 +130,6 @@ contract MRC_CrowdsaleReservations is Ownable {
       pendingReservationDevelopment = 0;
     } else if (_reservePurpose == ReservePurpose.sale) {
       pendingReservationSale = 0;
-    } else {
-      revert();
     }
   } 
 
