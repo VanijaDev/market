@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "../node_modules/openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol";
+import "../node_modules/openzeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol";
 
 import "./MRC_WhitelistedSourceDestination.sol";
 import "./MRC_CrowdsaleReservations.sol";
@@ -9,7 +10,7 @@ import "./MRC_StagesCrowdsale.sol";
 import "./MRC_Token.sol";
 
 
-contract MRC_Crowdsale is MintedCrowdsale, MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
+contract MRC_Crowdsale is MintedCrowdsale, CappedCrowdsale, MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
   uint256 public softCap = 3*(10**18);  //  TODO: correct values before deploy
   uint256 public hardCap = 7*(10**18);  //  TODO: correct values before deploy
 
@@ -22,6 +23,7 @@ contract MRC_Crowdsale is MintedCrowdsale, MRC_StagesCrowdsale, Pausable, MRC_Wh
    * @param _timings              Crowdsale timings: [OPENING, ICO_START, CLOSING]
    */
   constructor(uint256 _rate, ERC20 _token, address _wallet, uint256[] _timings)
+  CappedCrowdsale(hardCap)
   MRC_StagesCrowdsale(_rate, _wallet, _token, _timings)
   MRC_CrowdsaleReservations(_token)
   public {
