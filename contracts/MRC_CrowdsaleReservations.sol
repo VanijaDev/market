@@ -34,7 +34,7 @@ contract MRC_CrowdsaleReservations is Ownable {
    * @param _reservePurpose Reservation purpose
    */
   modifier reservationPending(ReservePurpose _reservePurpose) {
-    require(tokensReservedFor(_reservePurpose) > 0);
+    require(tokensReservedFor(_reservePurpose) > 0, "reserved tokens must be > 0");
     _;
   }
 
@@ -49,7 +49,11 @@ contract MRC_CrowdsaleReservations is Ownable {
     token = MRC_Token(_token);
     calculateTokenReservations();
   }
-
+  
+  /**
+   * PUBLIC
+   */
+  
   function tokensReservedFor(ReservePurpose _reservePurpose) public view returns(uint256) {
     if (_reservePurpose == ReservePurpose.team) {
       return pendingReservationTeam;
@@ -62,18 +66,12 @@ contract MRC_CrowdsaleReservations is Ownable {
     }
   }
 
-  
-  /**
-   * PUBLIC
-   */
-
   //  reservation transfers
   function transferTeamReservation(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
     reservationPending(ReservePurpose.team) {
       uint256 tokens = tokensReservedFor(ReservePurpose.team);
-      require(tokens > 0, "reserved tokens must be > 0");
 
       clearReservation(ReservePurpose.team);
       token.mint(_address, tokens);
@@ -85,7 +83,6 @@ contract MRC_CrowdsaleReservations is Ownable {
     nonZeroAddressOnly(_address)
     reservationPending(ReservePurpose.bounty) {
       uint256 tokens = tokensReservedFor(ReservePurpose.bounty);
-      require(tokens > 0, "reserved tokens must be > 0");
 
       clearReservation(ReservePurpose.bounty);
       token.mint(_address, tokens);
@@ -97,7 +94,6 @@ contract MRC_CrowdsaleReservations is Ownable {
     nonZeroAddressOnly(_address)
     reservationPending(ReservePurpose.development) {
       uint256 tokens = tokensReservedFor(ReservePurpose.development);
-      require(tokens > 0, "reserved tokens must be > 0");
 
       clearReservation(ReservePurpose.development);
       token.mint(_address, tokens);
@@ -109,7 +105,6 @@ contract MRC_CrowdsaleReservations is Ownable {
     nonZeroAddressOnly(_address)
     reservationPending(ReservePurpose.sale) {
       uint256 tokens = tokensReservedFor(ReservePurpose.sale);
-      require(tokens > 0, "reserved tokens must be > 0");
       
       clearReservation(ReservePurpose.sale);
       token.mint(_address, tokens);
