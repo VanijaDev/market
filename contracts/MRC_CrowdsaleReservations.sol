@@ -67,7 +67,7 @@ contract MRC_CrowdsaleReservations is Ownable {
   }
 
   //  reservation transfers
-  function transferTeamReservation(address _address) public
+  function transferReservationTeam(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
     reservationPending(ReservePurpose.team) {
@@ -78,7 +78,7 @@ contract MRC_CrowdsaleReservations is Ownable {
       emit TeamReserveTransferred(_address, tokens);
   }
 
-  function transferBountyReservation(address _address) public
+  function transferReservationBounty(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
     reservationPending(ReservePurpose.bounty) {
@@ -89,7 +89,7 @@ contract MRC_CrowdsaleReservations is Ownable {
       emit BountyReserveTransferred(_address, tokens);
   }
 
-  function transferDevelopmentReservation(address _address) public
+  function transferReservationDevelopment(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
     reservationPending(ReservePurpose.development) {
@@ -100,7 +100,7 @@ contract MRC_CrowdsaleReservations is Ownable {
       emit DevelopmentReserveTransferred(_address, tokens);
   }
 
-  function transferSaleReservation(address _address) public
+  function transferReservationSale(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
     reservationPending(ReservePurpose.sale) {
