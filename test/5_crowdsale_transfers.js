@@ -1,84 +1,84 @@
-const MRC_Token = artifacts.require("MRC_Token");
-const MRC_Crowdsale = artifacts.require("./MRC_Crowdsale.sol");
-const BigNumber = require("bignumber.js");
+// const MRC_Token = artifacts.require("MRC_Token");
+// const MRC_Crowdsale = artifacts.require("./MRC_Crowdsale.sol");
+// const BigNumber = require("bignumber.js");
 
-import {
-    advanceBlock
-} from './helpers/advanceToBlock.js';
+// import {
+//     advanceBlock
+// } from './helpers/advanceToBlock.js';
 
-import increaseTime, {
-    duration,
-    increaseTimeTo
-} from "./helpers/increaseTime";
-import expectThrow from './helpers/expectThrow';
-import crowdsaleMock from "./helpers/mocks/crowdsaleMock";
+// import increaseTime, {
+//     duration,
+//     increaseTimeTo
+// } from "./helpers/increaseTime";
+// import expectThrow from './helpers/expectThrow';
+// import crowdsaleMock from "./helpers/mocks/crowdsaleMock";
 
-contract("Crowdsale basic", (accounts) => {
-    const OWNER = accounts[0];
-    const ACC_1 = accounts[1];
-    const ACC_2 = accounts[2];
+// contract("Crowdsale basic", (accounts) => {
+//     const OWNER = accounts[0];
+//     const ACC_1 = accounts[1];
+//     const ACC_2 = accounts[2];
 
-    let token;
-    let crowdsale;
+//     let token;
+//     let crowdsale;
 
-    beforeEach("create crowdsale inst", async () => {
-        await advanceBlock();
+//     beforeEach("create crowdsale inst", async () => {
+//         await advanceBlock();
 
-        token = await MRC_Token.new();
+//         token = await MRC_Token.new();
 
-        let mock = crowdsaleMock();
-        let wallet = accounts[9];
+//         let mock = crowdsaleMock();
+//         let wallet = accounts[9];
 
-        const OPENING = web3.eth.getBlock("latest").timestamp + duration.hours(1);
-        const ICO_START = OPENING + duration.hours(1);
-        const CLOSING = ICO_START + duration.hours(1);
-        const TIMINGS = [OPENING, ICO_START, CLOSING];
+//         const OPENING = web3.eth.getBlock("latest").timestamp + duration.hours(1);
+//         const ICO_START = OPENING + duration.hours(1);
+//         const CLOSING = ICO_START + duration.hours(1);
+//         const TIMINGS = [OPENING, ICO_START, CLOSING];
 
-        crowdsale = await MRC_Crowdsale.new(mock.rate, token.address, wallet, mock.reservations, TIMINGS);
-        await token.transferOwnership(crowdsale.address);
-    });
+//         crowdsale = await MRC_Crowdsale.new(mock.rate, token.address, wallet, mock.reservations, TIMINGS);
+//         await token.transferOwnership(crowdsale.address);
+//     });
 
-    describe("owner can transfer manually", () => {
-        it("should valide correct token amount is being minted", async () => {
-            const TOKENS = 10 * (10 ** 8);
-            await crowdsale.manualMint(ACC_1, TOKENS);
+//     describe("owner can transfer manually", () => {
+//         it("should valide correct token amount is being minted", async () => {
+//             const TOKENS = 10 * (10 ** 8);
+//             await crowdsale.manualMint(ACC_1, TOKENS);
 
-            assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS, "wrong token amount after manual minting");
-        });
+//             assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS, "wrong token amount after manual minting");
+//         });
 
-        it("should valide correct token amount for address after multiple manual mintings", async () => {
-            const TOKENS_1 = 10 * (10 ** 8);
-            const TOKENS_2 = 4 * (10 ** 8);
-            await crowdsale.manualMint(ACC_1, TOKENS_1);
-            await crowdsale.manualMint(ACC_1, TOKENS_2);
+//         it("should valide correct token amount for address after multiple manual mintings", async () => {
+//             const TOKENS_1 = 10 * (10 ** 8);
+//             const TOKENS_2 = 4 * (10 ** 8);
+//             await crowdsale.manualMint(ACC_1, TOKENS_1);
+//             await crowdsale.manualMint(ACC_1, TOKENS_2);
 
-            assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS_1 + TOKENS_2, "wrong token amount after combined manual mintings");
-        });
+//             assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS_1 + TOKENS_2, "wrong token amount after combined manual mintings");
+//         });
 
-        it("should valide not owner can not manually mint", async () => {
-            const TOKENS = 10 * (10 ** 8);
-            await expectThrow(crowdsale.manualMint(ACC_1, TOKENS, {
-                from: ACC_1
-            }), "should fail, because owner can manually mint");
-        });
-    });
+//         it("should valide not owner can not manually mint", async () => {
+//             const TOKENS = 10 * (10 ** 8);
+//             await expectThrow(crowdsale.manualMint(ACC_1, TOKENS, {
+//                 from: ACC_1
+//             }), "should fail, because owner can manually mint");
+//         });
+//     });
 
-    describe("rate update", () => {
-        const RATE_ICO = 1000;
+//     describe("rate update", () => {
+//         const RATE_ICO = 1000;
 
-        it("should validate reate is being updated correct", async () => {
-            let mock = crowdsaleMock();
+//         it("should validate reate is being updated correct", async () => {
+//             let mock = crowdsaleMock();
 
-            assert.equal(new BigNumber(await crowdsale.rate.call()).toNumber(), mock.rate, "wrong preICO rate at the beginning");
+//             assert.equal(new BigNumber(await crowdsale.rate.call()).toNumber(), mock.rate, "wrong preICO rate at the beginning");
 
-            await crowdsale.updateExchangeRate(RATE_ICO);
-            assert.equal(new BigNumber(await crowdsale.rate.call()).toNumber(), RATE_ICO, "wrong rate after update");
-        });
+//             await crowdsale.updateExchangeRate(RATE_ICO);
+//             assert.equal(new BigNumber(await crowdsale.rate.call()).toNumber(), RATE_ICO, "wrong rate after update");
+//         });
 
-        it("should validate not user can not update rate", async () => {
-            await expectThrow(crowdsale.updateExchangeRate(RATE_ICO, {
-                from: ACC_1
-            }), "not owner can not update rate");
-        });
-    });
-});
+//         it("should validate not user can not update rate", async () => {
+//             await expectThrow(crowdsale.updateExchangeRate(RATE_ICO, {
+//                 from: ACC_1
+//             }), "not owner can not update rate");
+//         });
+//     });
+// });
