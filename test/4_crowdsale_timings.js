@@ -30,7 +30,7 @@ contract("Timing", (accounts) => {
     const CLOSING = ICO_START + duration.hours(1);
     const TIMINGS = [OPENING, ICO_START, CLOSING];
 
-    crowdsale = await MRC_Crowdsale.new(mock.rate, token.address, wallet, mock.reservations, TIMINGS);
+    crowdsale = await MRC_Crowdsale.new(mock.rate, token.address, wallet, TIMINGS);
     await token.transferOwnership(crowdsale.address);
   });
 
@@ -41,7 +41,7 @@ contract("Timing", (accounts) => {
 
     it("should valide hasOpened is true after crowdsale open timestamp", async () => {
       let opening = new BigNumber(await crowdsale.openingTime.call());
-      await increaseTimeTo(opening.plus(duration.hours(1)));
+      await increaseTimeTo(opening.plus(duration.seconds(1)));
       assert.isTrue(await crowdsale.hasOpened.call(), "should be already opened");
     });
   });
