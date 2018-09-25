@@ -20,14 +20,16 @@ contract("MRC_Token", (accounts) => {
   });
 
   it("should validate total supply", async () => {
-    assert.equal(new BigNumber(await token.totalSupplyMax.call()).toNumber(), new BigNumber(100000000000000000).toNumber(), "wrong totalSupplyMax");
+    assert.equal(new BigNumber(await token.totalSupplyMax.call()).toNumber(), new BigNumber(100000000000000000).toNumber(), "wrong totalSupplyMax, must be 1 000 000 000 0000 0000");
   });
 
   it("should not mint more than max limit", async () => {
     let limit = new BigNumber(await token.totalSupplyMax.call());
     let limit_2_of_3 = limit.multipliedBy(2).dividedBy(3);
 
+    await expectThrow(token.mint(ACC_1, limit.plus(100).toNumber()), "should not allow to mint more than limit by single transfer");
+
     await token.mint(ACC_1, limit_2_of_3.toNumber());
-    await expectThrow(token.mint(ACC_1, limit_2_of_3.toNumber()), "should not allow to mint more than limit");
+    await expectThrow(token.mint(ACC_1, limit_2_of_3.toNumber()), "should not allow to mint more than limit by parts");
   });
 });
