@@ -8,11 +8,6 @@ contract MRC_WhitelistedSourceDestination is Ownable {
   mapping (address => address) public whitelist;
 
   /**
-   * @dev Reverts if beneficiary is not whitelisted. Can be used when extending this contract.
-   */
-   // TODO: test
-
-  /**
    * @dev Throws if operator is not whitelisted.
    * @param _source address
    */

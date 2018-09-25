@@ -7,6 +7,11 @@ import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/DetailedERC2
 contract MRC_Token is DetailedERC20("Mercato", "MRC", 8), MintableToken {
   uint256 public totalSupplyMax;
 
+
+  /**
+   * @dev Throws if increased amount of tokens exceeds max available amount.
+   * @param _amount token amount to be increased with
+   */
   modifier amountWithinMaxLimit(uint256 _amount) {
     require(totalSupply().add(_amount) <= totalSupplyMax, "token amount cannot be minted because totalSupply will exceed totalSupplyMax");
     _;
