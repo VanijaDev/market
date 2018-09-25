@@ -52,15 +52,12 @@ contract MRC_Crowdsale is MintedCrowdsale, CappedCrowdsale, MRC_StagesCrowdsale,
     rate = _rate;
   }
 
-  function softCapReached() public view returns (bool) {
-    return weiRaised >= softCap;
+  function transferUnspentTokens(address _to) public onlyOwner {
+    require(isFinalized);
+    
+    uint256 unspentTokens = MRC_Token(token).totalSupplyMax().sub(token.totalSupply());
+    _deliverTokens(_to, unspentTokens);
   }
-
-//  TODO: must be closed
-  // function transferUnspentTokens(address _to) public onlyOwner {
-  //   uint256 unspentTokens = MRC_Token(token).totalSupplyMax().sub(token.totalSupply());
-  //   _deliverTokens(_to, unspentTokens);
-  // }
 
   /**
    * OVERRIDEN
