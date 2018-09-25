@@ -1,7 +1,7 @@
-pragma solidity ^0.4.22;
+pragma solidity ^0.4.24;
 
 import "../node_modules/openzeppelin-solidity/contracts/crowdsale/Crowdsale.sol";
-import "../node_modules/openzeppelin-solidity/contracts/crowdsale/validation/TimedCrowdsale.sol";
+import "./MRC_RefundableCrowdsale.sol";
 
 import "./MRC_Token.sol";
 
@@ -11,7 +11,7 @@ import "./MRC_Token.sol";
   * stages
  */
 
-contract MRC_StagesCrowdsale is TimedCrowdsale {
+contract MRC_StagesCrowdsale is MRC_RefundableCrowdsale {
   uint256 public investmentMinPreICO = 1.5 * (10 ** 18);
   uint256 public investmentMaxPreICO = 35 * (10 ** 18);
   uint256 public investmentMinICO = 0.5 * (10 ** 18);
@@ -29,9 +29,10 @@ contract MRC_StagesCrowdsale is TimedCrowdsale {
    * @param _token    Crowdsale token
    * @param _timings  Crowdsale timings: [OPENING, ICO_START, CLOSING]
    */
-  constructor(uint256 _rate, address _wallet, ERC20 _token, uint256[] _timings) 
+  constructor(uint256 _rate, address _wallet, ERC20 _token, uint256[] _timings, uint256 _softCap) 
     Crowdsale(_rate, _wallet, _token)
-    TimedCrowdsale(_timings[0], _timings[2]) public {
+    TimedCrowdsale(_timings[0], _timings[2])
+    MRC_RefundableCrowdsale(_softCap) public {
 
       icoStageStartTimestamp = _timings[1];
   }

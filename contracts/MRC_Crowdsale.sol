@@ -24,7 +24,7 @@ contract MRC_Crowdsale is MintedCrowdsale, CappedCrowdsale, MRC_StagesCrowdsale,
    */
   constructor(uint256 _rate, ERC20 _token, address _wallet, uint256[] _timings)
   CappedCrowdsale(hardCap)
-  MRC_StagesCrowdsale(_rate, _wallet, _token, _timings)
+  MRC_StagesCrowdsale(_rate, _wallet, _token, _timings, softCap)
   MRC_CrowdsaleReservations(_token)
   public {
   }
@@ -114,14 +114,6 @@ contract MRC_Crowdsale is MintedCrowdsale, CappedCrowdsale, MRC_StagesCrowdsale,
     super._deliverTokens(_beneficiary, _tokenAmount);
   }
 
-  /**
-   * @dev Determines how ETH is stored/forwarded on purchases.
-   */
-  function _forwardFunds() internal {
-    if(softCapReached()) {
-      wallet.transfer(address(this).balance);
-    }
-  }
 
   /**
    * PRIVATE
