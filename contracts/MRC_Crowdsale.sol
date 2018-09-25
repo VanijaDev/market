@@ -73,7 +73,7 @@ contract MRC_Crowdsale is MintedCrowdsale, CappedCrowdsale, MRC_StagesCrowdsale,
     uint256 _weiAmount
   )
     internal
-    whitelistedOnly(_beneficiary)
+    onlyIfWhitelisted(_beneficiary)
     whenNotPaused
 
   {

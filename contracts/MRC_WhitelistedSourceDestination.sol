@@ -11,7 +11,12 @@ contract MRC_WhitelistedSourceDestination is Ownable {
    * @dev Reverts if beneficiary is not whitelisted. Can be used when extending this contract.
    */
    // TODO: test
-  modifier whitelistedOnly(address _source) {
+
+  /**
+   * @dev Throws if operator is not whitelisted.
+   * @param _source address
+   */
+  modifier onlyIfWhitelisted(address _source) {
     require(whitelist[_source] != address(0), "source address has no destination address");
     _;
   }
