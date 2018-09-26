@@ -83,6 +83,3 @@ contract MRC_StagesCrowdsale is MRC_RefundableCrowdsale {
     return now >= icoStageStartTimestamp;
   }
 }
-
-
-// TODO: implement finishMinting()
