@@ -24,13 +24,17 @@ contract MRC_CrowdsaleReservations is Ownable {
 
   enum ReservePurpose {team, bounty, development, sale}
 
+  /**
+   * @dev Throws if address is 0.
+   * @param _address Address to validate
+   */
   modifier nonZeroAddressOnly(address _address) {
     require(_address != address(0), "address can not be 0");
     _;
   }
 
   /**
-   * @dev Checks if reservation was not spent.
+   * @dev Throws if reservation was spent.
    * @param _reservePurpose Reservation purpose
    */
   modifier reservationPending(ReservePurpose _reservePurpose) {
@@ -54,6 +58,11 @@ contract MRC_CrowdsaleReservations is Ownable {
    * PUBLIC
    */
   
+  /**
+   * @dev Check token resravetion for different purposes.
+   * @param _reservePurpose Reservation purpose
+   * @return amount of reserver tokens for provided purpose
+   */
   function tokensReservedFor(ReservePurpose _reservePurpose) public view returns(uint256) {
     if (_reservePurpose == ReservePurpose.team) {
       return pendingReservationTeam;
@@ -66,7 +75,10 @@ contract MRC_CrowdsaleReservations is Ownable {
     }
   }
 
-  //  reservation transfers
+  /**
+   * @dev Transfer tokens reserved for Team purpose.
+   * @param _address Address to transfer
+   */
   function transferReservationTeam(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
@@ -78,6 +90,10 @@ contract MRC_CrowdsaleReservations is Ownable {
       emit TeamReserveTransferred(_address, tokens);
   }
 
+  /**
+   * @dev Transfer tokens reserved for Bounty purpose.
+   * @param _address Address to transfer
+   */
   function transferReservationBounty(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
@@ -89,6 +105,10 @@ contract MRC_CrowdsaleReservations is Ownable {
       emit BountyReserveTransferred(_address, tokens);
   }
 
+  /**
+   * @dev Transfer tokens reserved for Development purpose.
+   * @param _address Address to transfer
+   */
   function transferReservationDevelopment(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
@@ -100,6 +120,10 @@ contract MRC_CrowdsaleReservations is Ownable {
       emit DevelopmentReserveTransferred(_address, tokens);
   }
 
+  /**
+   * @dev Transfer tokens reserved for Sale purpose.
+   * @param _address Address to transfer
+   */
   function transferReservationSale(address _address) public
     onlyOwner
     nonZeroAddressOnly(_address)
@@ -116,6 +140,10 @@ contract MRC_CrowdsaleReservations is Ownable {
    * INTERNAL
    */
 
+  /**
+   * @dev Clears token reservation amount for provided purpose.
+   * @param _reservePurpose Reservation purpose
+   */
   function clearReservation(ReservePurpose _reservePurpose) internal {
     if (_reservePurpose == ReservePurpose.team) {
       pendingReservationTeam = 0;
