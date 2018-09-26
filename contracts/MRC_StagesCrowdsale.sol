@@ -79,7 +79,7 @@ contract MRC_StagesCrowdsale is MRC_RefundableCrowdsale {
    * @dev Checks whether ICO stage has already started.
    * @return Whether ICO stage has already started
    */
-  function icoStageHasStarted() private view returns(bool) {
+  function icoStageHasStarted() public view returns(bool) {
     return now >= icoStageStartTimestamp;
   }
 }
