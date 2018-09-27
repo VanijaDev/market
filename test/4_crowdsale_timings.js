@@ -35,11 +35,11 @@ contract("Timing", (accounts) => {
   });
 
   describe("has opened", () => {
-    it("should valide hasOpened is false until crowdsale open timestamp", async () => {
+    it("should validate hasOpened is false until crowdsale open timestamp", async () => {
       assert.isFalse(await crowdsale.hasOpened.call(), "should not be opened yet");
     });
 
-    it("should valide hasOpened is true after crowdsale open timestamp", async () => {
+    it("should validate hasOpened is true after crowdsale open timestamp", async () => {
       let opening = new BigNumber(await crowdsale.openingTime.call());
       await increaseTimeTo(opening.plus(duration.seconds(1)));
       assert.isTrue(await crowdsale.hasOpened.call(), "should be already opened");

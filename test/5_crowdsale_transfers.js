@@ -39,14 +39,14 @@ contract("Crowdsale basic", (accounts) => {
     });
 
     describe("transfer manually", () => {
-        it("should valide correct token amount is being minted", async () => {
+        it("should validate correct token amount is being minted", async () => {
             const TOKENS = 10 * (10 ** 8);
             await crowdsale.manualMint(ACC_1, TOKENS);
 
             assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS, "wrong token amount after manual minting");
         });
 
-        it("should valide correct token amount for address after multiple manual mintings", async () => {
+        it("should validate correct token amount for address after multiple manual mintings", async () => {
             const TOKENS_1 = 10 * (10 ** 8);
             const TOKENS_2 = 4 * (10 ** 8);
             await crowdsale.manualMint(ACC_1, TOKENS_1);
@@ -55,7 +55,7 @@ contract("Crowdsale basic", (accounts) => {
             assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS_1 + TOKENS_2, "wrong token amount after combined manual mintings");
         });
 
-        it("should valide not owner can not manually mint", async () => {
+        it("should validate not owner can not manually mint", async () => {
             const TOKENS = 10 * (10 ** 8);
             await expectThrow(crowdsale.manualMint(ACC_1, TOKENS, {
                 from: ACC_1
