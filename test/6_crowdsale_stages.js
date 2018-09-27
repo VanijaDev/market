@@ -146,9 +146,9 @@ contract("Stages", (accounts) => {
                 from: ACC_1,
                 value: ether(2)
             });
-            //  baseTokens = 1500 * 2ETH = 3000 0000 0000
-            //  bonus for ICO = base * 20 / 100 = 600 0000 0000
-            const TOKENS = new BigNumber(360000000000);
+            //  baseTokens = 500 * 2ETH = 1000 0000 0000
+            //  bonus for ICO = base * 20 / 100 = 200 0000 0000
+            const TOKENS = new BigNumber(120000000000);
 
             assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS.toNumber(), "wrong tokens after ICO purchase");
         });
@@ -168,9 +168,9 @@ contract("Stages", (accounts) => {
                 from: ACC_1,
                 value: ether(2)
             });
-            //  baseTokens = 1500 * 2ETH = 3000 0000 0000
-            //  bonus for ICO = base * 20 / 100 = 600 0000 0000
-            const TOKENS_ICO = new BigNumber(360000000000);
+            //  baseTokens = 500 * 2ETH = 1000 0000 0000
+            //  bonus for ICO = base * 20 / 100 = 200 0000 0000
+            const TOKENS_ICO = new BigNumber(120000000000);
 
             assert.equal(new BigNumber(await token.balanceOf(ACC_1)).toNumber(), TOKENS_PRE_ICO.plus(TOKENS_ICO).toNumber(), "wrong tokens after preICO and ICO purchases");
         });
@@ -185,7 +185,7 @@ contract("Stages", (accounts) => {
         });
     });
 
-    describe.only("rateETH", () => {
+    describe("rateETH", () => {
         it("should allow owner to update preICO rate", async () => {
             await crowdsale.updateExchangeRate_preICO(200);
             assert.isFalse(await crowdsale.icoStageHasStarted.call(), "preICO should be running still");
