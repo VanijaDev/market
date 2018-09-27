@@ -37,6 +37,6 @@ contract MRC_Token is DetailedERC20("Mercato", "MRC", 8), MintableToken {
     public
     returns (bool)
   {
-    super.mint(_to, _amount);
+    return super.mint(_to, _amount);
   }
 }
