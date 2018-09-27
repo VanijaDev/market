@@ -17,14 +17,14 @@ contract MRC_Crowdsale is MintedCrowdsale, CappedCrowdsale, MRC_StagesCrowdsale,
 
   /**
    * @dev Constructor, takes crowdsale opening and closing times.
-   * @param _rate                 Crowdsale token per ETH rate
+   * @param _rateETH              Crowdsale token per ETH rate, [preICO, ICO]
    * @param _wallet               Crowdsale wallet
    * @param _token                Crowdsale token
    * @param _timings              Crowdsale timings: [OPENING, ICO_START, CLOSING]
    */
-  constructor(uint256 _rate, ERC20 _token, address _wallet, uint256[] _timings)
+  constructor(uint256[] _rateETH, ERC20 _token, address _wallet, uint256[] _timings)
   CappedCrowdsale(hardCap)
-  MRC_StagesCrowdsale(_rate, _wallet, _token, _timings, softCap)
+  MRC_StagesCrowdsale(_rateETH, _wallet, _token, _timings, softCap)
   MRC_CrowdsaleReservations(_token)
   public {
   }
@@ -38,18 +38,8 @@ contract MRC_Crowdsale is MintedCrowdsale, CappedCrowdsale, MRC_StagesCrowdsale,
    * @param _to Token beneficiary
    * @param _amount Token amount to be minted
    */
-  function manualMint(address _to, uint256 _amount) public onlyOwner nonZeroAddressOnly(_to) {
-    require(_amount > 0, "mint amount should be > 0");
+  function manualMint(address _to, uint256 _amount) public onlyOwner {
     _deliverTokens(_to, _amount);
-  }
-
-  /**
-   * @dev Update rate. Use it to update rate for ICO stage.
-   * @param _rate Rate to be updated to
-   */
-  function updateExchangeRate(uint256 _rate) public onlyOwner {
-    require(_rate > 0, "rate should be > 0");
-    rate = _rate;
   }
 
   function transferUnspentTokens(address _to) public onlyOwner {
@@ -89,7 +79,8 @@ contract MRC_Crowdsale is MintedCrowdsale, CappedCrowdsale, MRC_StagesCrowdsale,
   function _getTokenAmount(uint256 _weiAmount)
     internal view returns (uint256)
   {
-    uint256 baseTokens = _weiAmount.mul(rate).div(10 ** 10);  //  rate is used for ETH not wei
+    uint256 rateETH = currentRateETH();
+    uint256 baseTokens = _weiAmount.mul(rateETH).div(10 ** 10);  //  rate is used for ETH not wei
 
     uint256 discountPercent = currentDiscountPercent();
     uint256 bonusTokens = baseTokens.mul(discountPercent).div(100);

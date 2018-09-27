@@ -22,19 +22,22 @@ contract MRC_StagesCrowdsale is MRC_RefundableCrowdsale {
 
   uint256 public icoStageStartTimestamp;
 
+  uint256[] public rateETH;
+
   /**
    * @dev Constructor, takes crowdsale opening and closing times.
-   * @param _rate     Crowdsale token per ETH rate
+   * @param _rateETH  Crowdsale token per ETH rate, [preICO, ICO]
    * @param _wallet   Crowdsale wallet
    * @param _token    Crowdsale token
    * @param _timings  Crowdsale timings: [OPENING, ICO_START, CLOSING]
    */
-  constructor(uint256 _rate, address _wallet, ERC20 _token, uint256[] _timings, uint256 _softCap) 
-    Crowdsale(_rate, _wallet, _token)
+  constructor(uint256[] _rateETH, address _wallet, ERC20 _token, uint256[] _timings, uint256 _softCap) 
+    Crowdsale(1, _wallet, _token)
     TimedCrowdsale(_timings[0], _timings[2])
     MRC_RefundableCrowdsale(_softCap) public {
 
       icoStageStartTimestamp = _timings[1];
+      validateAndSaveRateETH(_rateETH);
   }
 
   /**
@@ -58,6 +61,36 @@ contract MRC_StagesCrowdsale is MRC_RefundableCrowdsale {
     return _wei >= investmentMinPreICO && _wei <= investmentMaxPreICO;
   }
 
+  /**
+   * @dev Checks whether ICO stage has already started.
+   * @return Whether ICO stage has already started
+   */
+  function icoStageHasStarted() public view returns(bool) {
+    return now >= icoStageStartTimestamp;
+  }
+
+  function currentRateETH() public view returns (uint256) {
+    return icoStageHasStarted() ? rateETH[1] : rateETH[0];
+  }
+
+  /**
+   * @dev Update preICO rate. Use it to update rate for ICO stage.
+   * @param _rate Rate to be updated to
+   */
+  function updateExchangeRate_preICO(uint256 _rate) public onlyOwner {
+    require(_rate > 0, "rate should be > 0");
+    rateETH[0] = _rate;
+  }
+
+  /**
+   * @dev Update ICO rate. Use it to update rate for ICO stage.
+   * @param _rate Rate to be updated to
+   */
+  function updateExchangeRate_ICO(uint256 _rate) public onlyOwner {
+    require(_rate > 0, "rate should be > 0");
+    rateETH[1] = _rate;
+  }
+
 
   /**
    * INTERNAL
@@ -75,11 +108,13 @@ contract MRC_StagesCrowdsale is MRC_RefundableCrowdsale {
    * PRIVATE
    */
 
-  /**
-   * @dev Checks whether ICO stage has already started.
-   * @return Whether ICO stage has already started
-   */
-  function icoStageHasStarted() public view returns(bool) {
-    return now >= icoStageStartTimestamp;
-  }
+   function validateAndSaveRateETH(uint256[] _rateETH) private {
+     require(_rateETH.length == 2, "wrong rateETH length");
+
+     for(uint256 i = 0; i < _rateETH.length; i ++) {
+       require(_rateETH[i] > 0, "rate should be > 0");
+     }
+
+     rateETH = _rateETH;
+   }
 }
