@@ -30,7 +30,7 @@ contract("Timing", (accounts) => {
     const CLOSING = ICO_START + duration.hours(1);
     const TIMINGS = [OPENING, ICO_START, CLOSING];
 
-    crowdsale = await MRC_Crowdsale.new(mock.rate, token.address, wallet, TIMINGS);
+    crowdsale = await MRC_Crowdsale.new(mock.rateETH, token.address, wallet, TIMINGS);
     await token.transferOwnership(crowdsale.address);
   });
 

@@ -1,5 +1,5 @@
 let mock = {
-    rate: 1500,
+    rateETH: [1500, 500],
     reservations: [14, 5, 15, 1] //  team, bounties, development, sale
 };
 

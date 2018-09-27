@@ -24,13 +24,15 @@ contract("Stages", (accounts) => {
     let crowdsale;
     let icoStart;
 
+    let timings;
+
     beforeEach("create crowdsale inst", async () => {
         await advanceBlock();
 
         const OPENING = latestTime() + duration.hours(1);
         const ICO_START = OPENING + duration.hours(1);
         const CLOSING = ICO_START + duration.hours(1);
-        const TIMINGS = [OPENING, ICO_START, CLOSING];
+        timings = [OPENING, ICO_START, CLOSING];
 
         icoStart = ICO_START;
 
@@ -38,7 +40,7 @@ contract("Stages", (accounts) => {
         let wallet = accounts[9];
 
         token = await MRC_Token.new();
-        crowdsale = await MRC_Crowdsale.new(mock.rate, token.address, wallet, TIMINGS);
+        crowdsale = await MRC_Crowdsale.new(mock.rateETH, token.address, wallet, timings);
         await token.transferOwnership(crowdsale.address);
 
         await crowdsale.addToWhitelist(ACC_1, ACC_1);
@@ -174,12 +176,48 @@ contract("Stages", (accounts) => {
         });
     });
 
-    describe.only("icoStageHasStarted", () => {
+    describe("icoStageHasStarted", () => {
         it("should vlidate icoStageHasStarted", async () => {
             assert.isFalse(await crowdsale.icoStageHasStarted.call(), "ICO should not be started yet");
 
             await increaseTimeTo(await crowdsale.icoStageStartTimestamp.call());
             assert.isTrue(await crowdsale.icoStageHasStarted.call(), "ICO should be started now");
+        });
+    });
+
+    describe.only("rateETH", () => {
+        it("should allow owner to update preICO rate", async () => {
+            await crowdsale.updateExchangeRate_preICO(200);
+            assert.isFalse(await crowdsale.icoStageHasStarted.call(), "preICO should be running still");
+            assert.equal(new BigNumber(await crowdsale.currentRateETH.call()).toNumber(), 200, "wrong preICO rate after update");
+        });
+
+        it("should allow owner to update ICO rate", async () => {
+            await crowdsale.updateExchangeRate_ICO(300);
+            await increaseTimeTo(await timings[1] + 1);
+            assert.isTrue(await crowdsale.icoStageHasStarted.call(), "ICO should be started now");
+            assert.equal(new BigNumber(await crowdsale.currentRateETH.call()).toNumber(), 300, "wrong ICO rate after update");
+        });
+
+        it("should not allow not owner to update preICO rate", async () => {
+            await expectThrow(crowdsale.updateExchangeRate_preICO(200, {
+                from: ACC_1
+            }), "should not allow not owner to update exchange rate");
+        });
+
+        it("should not allow not owner to update ICO rate", async () => {
+            await expectThrow(crowdsale.updateExchangeRate_ICO(200, {
+                from: ACC_1
+            }), "should not allow not owner to update exchange rate");
+        });
+
+        it("should validate correct rate for preICO", async () => {
+            assert.equal(new BigNumber(await crowdsale.currentRateETH.call()).toNumber(), crowdsaleMock().rateETH[0], "wrong rate for preICO")
+        });
+
+        it("should validate correct rate for ICO", async () => {
+            await increaseTimeTo(await timings[1] + 1);
+            assert.equal(new BigNumber(await crowdsale.currentRateETH.call()).toNumber(), crowdsaleMock().rateETH[1], "wrong rate for ICO")
         });
     });
 });
