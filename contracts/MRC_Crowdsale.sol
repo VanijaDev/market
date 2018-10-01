@@ -11,8 +11,8 @@ import "./MRC_Token.sol";
 
 
 contract MRC_Crowdsale is MintedCrowdsale, CappedCrowdsale, MRC_StagesCrowdsale, Pausable, MRC_WhitelistedSourceDestination, MRC_CrowdsaleReservations {
-  uint256 public softCap = 3*(10**18);  //  TODO: correct values before deploy
-  uint256 public hardCap = 7*(10**18);  //  TODO: correct values before deploy
+  uint256 private softCap = 3*(10**18);  //  TODO: correct values before deploy
+  uint256 private hardCap = 7*(10**18);  //  TODO: correct values before deploy
 
 
   /**
