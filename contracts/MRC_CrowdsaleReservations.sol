@@ -34,7 +34,7 @@ contract MRC_CrowdsaleReservations is Ownable {
   }
 
   /**
-   * @dev Throws if reservation was spent.
+   * @dev Throws if reservation has been spent.
    * @param _reservePurpose Reservation purpose
    */
   modifier reservationPending(ReservePurpose _reservePurpose) {
