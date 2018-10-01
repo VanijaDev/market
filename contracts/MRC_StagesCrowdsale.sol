@@ -112,13 +112,16 @@ contract MRC_StagesCrowdsale is MRC_RefundableCrowdsale {
    * PRIVATE
    */
 
-   function validateAndSaveRateETH(uint256[] _rateETH) private {
-     require(_rateETH.length == 2, "wrong rateETH length");
+  /**
+   * @dev Validates rateETH and save it if successful.
+   */
+  function validateAndSaveRateETH(uint256[] _rateETH) private {
+    require(_rateETH.length == 2, "wrong rateETH length");
 
-     for(uint256 i = 0; i < _rateETH.length; i ++) {
-       require(_rateETH[i] > 0, "rate should be > 0");
-     }
+    for(uint256 i = 0; i < _rateETH.length; i ++) {
+      require(_rateETH[i] > 0, "rate should be > 0");
+    }
 
-     rateETH = _rateETH;
-   }
+    rateETH = _rateETH;
+  }
 }
