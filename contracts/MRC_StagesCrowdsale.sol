@@ -22,7 +22,7 @@ contract MRC_StagesCrowdsale is MRC_RefundableCrowdsale {
 
   uint256 public icoStageStartTimestamp;
 
-  uint256[] public rateETH;
+  uint256[] public rateETH; //  0 - preICO; 1 - ICO
 
   /**
    * @dev Constructor, takes crowdsale opening and closing times.
