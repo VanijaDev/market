@@ -69,6 +69,10 @@ contract MRC_StagesCrowdsale is MRC_RefundableCrowdsale {
     return now >= icoStageStartTimestamp;
   }
 
+  /**
+   * @dev Determines rate for current stage.
+   * @return Rate for current stage
+   */
   function currentRateETH() public view returns (uint256) {
     return icoStageHasStarted() ? rateETH[1] : rateETH[0];
   }
