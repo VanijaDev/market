@@ -25,6 +25,7 @@ contract("Stages", (accounts) => {
     let icoStart;
 
     let timings;
+    let wallet = accounts[9];
 
     beforeEach("create crowdsale inst", async () => {
         await advanceBlock();
@@ -37,7 +38,6 @@ contract("Stages", (accounts) => {
         icoStart = ICO_START;
 
         let mock = crowdsaleMock();
-        let wallet = accounts[9];
 
         token = await MRC_Token.new();
         crowdsale = await MRC_Crowdsale.new(mock.rateETH, token.address, wallet, timings);
@@ -220,4 +220,49 @@ contract("Stages", (accounts) => {
             assert.equal(new BigNumber(await crowdsale.currentRateETH.call()).toNumber(), crowdsaleMock().rateETH[1], "wrong rate for ICO")
         });
     });
+
+    describe("fund transfer on purchase", () => {
+        it("should validate funds not moved to wallet before soft cap reach", async () => {
+            let balanceBefore = new BigNumber(await web3.eth.getBalance(wallet));
+            await crowdsale.sendTransaction({
+                from: ACC_1,
+                value: ether(2)
+            });
+            assert.equal(new BigNumber(await web3.eth.getBalance(wallet)).toNumber(), balanceBefore.toNumber(), "funds should stay in contract before soft cap reached");
+        });
+
+        it("should validate funds transferred to wallet after soft cap exactly reached", async () => {
+            let balanceBefore = new BigNumber(await web3.eth.getBalance(wallet));
+            let softCap = new BigNumber(await crowdsale.goal.call());
+            await crowdsale.sendTransaction({
+                from: ACC_1,
+                value: softCap.toNumber()
+            });
+            let balanceAfter = new BigNumber(await web3.eth.getBalance(wallet));
+            assert.equal(balanceAfter.minus(balanceBefore).toNumber(), softCap.toNumber(), "funds should stay in contract before soft cap reached");
+        });
+
+        it("should move fund to wallet after soft cap reached after multiple purchases", async () => {
+            await crowdsale.addToWhitelist(ACC_2, ACC_2);
+            let balanceBefore = new BigNumber(await web3.eth.getBalance(wallet));
+            console.log("balanceBefore: ", balanceBefore.toNumber());
+
+            //  1
+            await crowdsale.sendTransaction({
+                from: ACC_2,
+                value: ether(2)
+            });
+
+            // 2
+            let softCap = new BigNumber(await crowdsale.goal.call());
+            await crowdsale.sendTransaction({
+                from: ACC_1,
+                value: softCap.toNumber()
+            });
+            let balanceAfter = new BigNumber(await web3.eth.getBalance(wallet));
+            console.log("balanceAfter: ", balanceAfter.toNumber());
+            assert.equal(balanceAfter.minus(balanceBefore).toNumber(), softCap.plus(ether(2)).toNumber(), "wrong wallet balance after soft cap reached");
+
+        });
+    })
 });
