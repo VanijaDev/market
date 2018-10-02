@@ -13,7 +13,7 @@ import increaseTime, {
 import expectThrow from './helpers/expectThrow';
 import crowdsaleMock from "./helpers/mocks/crowdsaleMock";
 
-contract("Crowdsale basic", (accounts) => {
+contract("Manual transfer", (accounts) => {
     const OWNER = accounts[0];
     const ACC_1 = accounts[1];
     const ACC_2 = accounts[2];
@@ -60,6 +60,14 @@ contract("Crowdsale basic", (accounts) => {
             await expectThrow(crowdsale.manualMint(ACC_1, TOKENS, {
                 from: ACC_1
             }), "should fail, because not owner can not manually mint");
+        });
+
+        it("should validate manually minted tokens are being added to minted tokens", async () => {
+            let tokens = 150000000;
+            let totalSupplyBefore = new BigNumber(await token.totalSupply.call());
+            await crowdsale.manualMint(ACC_1, tokens);
+            let totalSupplyAfter = new BigNumber(await token.totalSupply.call());
+            assert.equal(totalSupplyAfter.minus(totalSupplyBefore).toNumber(), 150000000, "wrong totalSupply after manual minting");
         });
     });
 });
