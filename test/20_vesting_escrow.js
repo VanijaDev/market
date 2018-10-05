@@ -14,7 +14,6 @@ import increaseTime, {
 import expectThrow from './helpers/expectThrow.js';
 import crowdsaleMock from "./helpers/mocks/crowdsaleMock.js";
 import latestTime from "./helpers/latestTime.js";
-import ether from "./helpers/ether.js";
 
 contract("Team vesting escrow", (accounts) => {
   const OWNER = accounts[0];
