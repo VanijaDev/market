@@ -12,12 +12,7 @@ contract MRC_VestingEscrow is Ownable {
 
   ERC20Basic public token;
 
-  struct VestingPortion {
-    uint256 amount;
-    bool released;
-  }
-
-  mapping (uint256 => VestingPortion) public vestingPortions;  //  timestamp => VestingPortion
+  mapping (uint256 => uint256) public minimumContractBalance;  //  timestamp => minimumContractBalance
   uint256[] public vestingPercents;
   uint256[] public vestingTimes;
 
@@ -35,11 +30,10 @@ contract MRC_VestingEscrow is Ownable {
      * Dec 31, 2019 @ 00:00 GMT 0
      * Apr 20, 2020 @ 00:00 GMT 0
      */
-    // vestingTimes = [1556582400, 1567209600, 1577750400, 1587340800]; //  TODO: uncomment for release ver
-    vestingTimes = [1538644471, 1538644571, 1538644671, 1538644871]; 
+    vestingTimes = [1538734600, 1538734660, 1538734760, 1538734860];
     vestingPercents = [20, 20, 30, 30];
 
-    // calculateVestingPortions();
+    calculateVestingPortions();
   }
 
   function calculateVestingPortions() public onlyOwner {
@@ -48,32 +42,47 @@ contract MRC_VestingEscrow is Ownable {
     uint256 totalBalance = token.balanceOf(address(this));
     require(totalBalance > 0, "contaract does not own tokens");
 
-    require(vestingPortions[0].amount == 0, "already calculated");
+    require(minimumContractBalance[vestingTimes[0]] == 0, "already calculated");
     
+    uint256 percentSum;
     for (uint256 i = 0; i < vestingPercents.length; i ++) {
-      vestingPortions[vestingTimes[i]] = VestingPortion(totalBalance.mul(vestingPercents[i]).div(100), false);
+      percentSum = percentSum.add(vestingPercents[i]);
+
+      minimumContractBalance[vestingTimes[i]] = totalBalance.sub(totalBalance.mul(percentSum).div(100));
     }
   }
 
-  function vestTokens(address _to) public onlyOwner {
-    require(token.balanceOf(address(this)) > 0, "no tokens on balance");
+  function vestTokens(address _to, uint256 _amount) public onlyOwner {
+    require(_to != address(0), "reciever can not be 0");
+    require(_amount > 0, "token amount must be > 0");
 
-    uint256 tokens;
-
+    uint256 currentBalance = uint256 (ERC20Basic(token).balanceOf(address(this)));
+    uint256 minimumBalance = currentBalance;
     for (uint256 i = 0; i < vestingTimes.length; i ++) {
       if (now >= vestingTimes[i]) {
-        if (!vestingPortions[vestingTimes[i]].released) {
-          tokens = tokens.add(vestingPortions[vestingTimes[i]].amount);
-          vestingPortions[vestingTimes[i]].released = true;
-        }
+        minimumBalance = minimumContractBalance[vestingTimes[i]];
       } else {
         break;
       }
     }
 
-    require(tokens > 0, "token amount must be > 0");
+    require(currentBalance.sub(_amount) >= minimumBalance, "token amount to transfer exceeds limit for vesting period");
 
-    token.safeTransfer(_to, tokens);
+    token.safeTransfer(_to, _amount);
+  }
+
+  function updatedVestingTimes(uint256[] _times) public onlyOwner {
+    require(_times.length == vestingTimes.length, "amount is not equal to existed");
+
+    for (uint256 i = 0; i < _times.length; i ++) {
+      require(_times[i] > 0, "each vesting time should be > 0");
+
+      uint256 amount = minimumContractBalance[vestingTimes[i]];
+      minimumContractBalance[vestingTimes[i]] = 0;
+      minimumContractBalance[_times[i]] = amount;
+    }
+
+    vestingTimes = _times;
   }
 
 }
