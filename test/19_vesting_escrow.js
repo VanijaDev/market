@@ -113,11 +113,8 @@ contract("Team vesting escrow", (accounts) => {
     });
   });
 
-  //  IMPORTANT: need to restart node each time beore test!
   describe("token transfers from vesting escrow", () => {
     it("should not exceed available transfer limit for vesting period_0", async () => {
-      console.log("\n!!! IMPORTANT: restart node each time beore test!\n");
-
       await crowdsale.transferReservationTeam(vestingEscrow.address);
       await vestingEscrow.calculateVestingPortions();
 
