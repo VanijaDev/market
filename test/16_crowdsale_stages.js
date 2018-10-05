@@ -245,7 +245,7 @@ contract("Stages", (accounts) => {
         it("should move fund to wallet after soft cap reached after multiple purchases", async () => {
             await crowdsale.addToWhitelist(ACC_2, ACC_2);
             let balanceBefore = new BigNumber(await web3.eth.getBalance(wallet));
-            console.log("balanceBefore: ", balanceBefore.toNumber());
+            // console.log("balanceBefore: ", balanceBefore.toNumber());
 
             //  1
             await crowdsale.sendTransaction({
@@ -260,7 +260,7 @@ contract("Stages", (accounts) => {
                 value: softCap.toNumber()
             });
             let balanceAfter = new BigNumber(await web3.eth.getBalance(wallet));
-            console.log("balanceAfter: ", balanceAfter.toNumber());
+            // console.log("balanceAfter: ", balanceAfter.toNumber());
             assert.equal(balanceAfter.minus(balanceBefore).toNumber(), softCap.plus(ether(2)).toNumber(), "wrong wallet balance after soft cap reached");
 
         });
