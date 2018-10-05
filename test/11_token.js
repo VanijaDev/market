@@ -6,7 +6,7 @@ import {
   advanceBlock
 } from './helpers/advanceToBlock.js';
 
-import expectThrow from './helpers/expectThrow';
+import expectThrow from './helpers/expectThrow.js';
 
 
 contract("MRC_Token", (accounts) => {

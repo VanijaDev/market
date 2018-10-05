@@ -9,9 +9,9 @@ import {
 import increaseTime, {
     duration,
     increaseTimeTo
-} from "./helpers/increaseTime";
-import expectThrow from './helpers/expectThrow';
-import crowdsaleMock from "./helpers/mocks/crowdsaleMock";
+} from "./helpers/increaseTime.js";
+import expectThrow from './helpers/expectThrow.js';
+import crowdsaleMock from "./helpers/mocks/crowdsaleMock.js";
 
 contract("Manual transfer", (accounts) => {
     const OWNER = accounts[0];
