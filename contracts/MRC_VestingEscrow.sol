@@ -16,10 +16,7 @@ contract MRC_VestingEscrow is Ownable {
   uint256[] public vestingPercents;
   uint256[] public vestingTimes;
 
-  constructor(address _owner, ERC20Basic _token) public {
-    require(_owner != address(0));
-    owner = _owner;
-
+  constructor(ERC20Basic _token) public {
     require(_token != address(0));
     token = _token;
 
