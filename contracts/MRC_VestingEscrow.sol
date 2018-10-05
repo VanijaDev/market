@@ -27,11 +27,11 @@ contract MRC_VestingEscrow is Ownable {
      * Dec 31, 2019 @ 00:00 GMT 0
      * Apr 20, 2020 @ 00:00 GMT 0
      */
-    vestingTimes = [1538734600, 1538734660, 1538734760, 1538734860];
+    vestingTimes = [1556582400, 1567209600, 1577750400, 1587340800];
     vestingPercents = [20, 20, 30, 30];
-
   }
 
+  //  TODO: call after deposit with tokens
   function calculateVestingPortions() public onlyOwner {
     require(vestingTimes.length == vestingPercents.length, "vestingTimes.length should be == vestingPercents.length");
 
