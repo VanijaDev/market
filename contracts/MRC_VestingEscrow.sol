@@ -30,7 +30,6 @@ contract MRC_VestingEscrow is Ownable {
     vestingTimes = [1538734600, 1538734660, 1538734760, 1538734860];
     vestingPercents = [20, 20, 30, 30];
 
-    calculateVestingPortions();
   }
 
   function calculateVestingPortions() public onlyOwner {
