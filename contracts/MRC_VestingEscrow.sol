@@ -31,7 +31,7 @@ contract MRC_VestingEscrow is Ownable {
     vestingPercents = [20, 20, 30, 30];
   }
 
-  //  TODO: call after deposit with tokens
+  //  IMPORTANT: call after deposit with tokens
   function calculateVestingPortions() public onlyOwner {
     require(vestingTimes.length == vestingPercents.length, "vestingTimes.length should be == vestingPercents.length");
 
