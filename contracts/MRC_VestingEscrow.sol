@@ -48,7 +48,7 @@ contract MRC_VestingEscrow is Ownable {
     }
   }
 
-  function vestTokens(address _to, uint256 _amount) public onlyOwner {
+  function transferTokens(address _to, uint256 _amount) public onlyOwner {
     require(_to != address(0), "reciever can not be 0");
     require(_amount > 0, "token amount must be > 0");
 
