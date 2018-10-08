@@ -87,7 +87,7 @@ contract("Refundable", (accounts) => {
 
     it("should finalize after closed by owner", async () => {
       await increaseTimeTo(timings[2] + duration.minutes(1));
-      crowdsale.finalize();
+      await crowdsale.finalize();
     });
 
     it("should not finalize second time", async () => {
@@ -102,6 +102,15 @@ contract("Refundable", (accounts) => {
       let tx = await crowdsale.finalize();
       assert.equal(tx.logs.length, 1, "should be 1 event");
       assert.equal(tx.logs[0].event, "Finalized", "wrong event name on finalize()");
+    });
+
+    it("should finish token minting after finalize", async () => {
+      assert.isFalse(await token.mintingFinished.call(), "minting should be enabled");
+
+      await increaseTimeTo(timings[2] + duration.minutes(1));
+      await crowdsale.finalize();
+
+      assert.isTrue(await token.mintingFinished.call(), "minting should be finished");
     });
   });
 

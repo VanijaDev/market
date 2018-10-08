@@ -4,6 +4,7 @@ pragma solidity ^0.4.24;
 import "../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "../node_modules/openzeppelin-solidity/contracts/crowdsale/distribution/FinalizableCrowdsale.sol";
 import "../node_modules/openzeppelin-solidity/contracts/payment/RefundEscrow.sol";
+import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
 
 
 /**
@@ -55,6 +56,8 @@ contract MRC_RefundableCrowdsale is FinalizableCrowdsale {
     if (!goalReached()) {
       escrow.enableRefunds();
     }
+
+    MintableToken(token).finishMinting();
 
     super.finalization();
   }
